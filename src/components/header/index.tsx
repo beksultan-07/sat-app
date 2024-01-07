@@ -1,0 +1,49 @@
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import { MenuOutlined, UserOutlined } from "@ant-design/icons";
+import { Button, Flex } from "antd";
+import logo from "../../assets/images/logo.png";
+import "./style.scss";
+
+const Header: React.FC = () => {
+    const [showNav, setShowNav] = useState(false);
+
+    return (
+        <>
+            <header className="header">
+                <Flex justify="space-between" align="center">
+                    <Button type="text" onClick={() => setShowNav(!showNav)}>
+                        <MenuOutlined />
+                    </Button>
+                    <Link to="/">
+                        <img src={logo} alt="" />
+                    </Link>
+                    <Link to="/profile">
+                        <Button type="text">
+                            <UserOutlined />
+                        </Button>
+                    </Link>
+                </Flex>
+            </header>
+
+            <div
+                className={`wrap ${showNav ? "active" : ""}`}
+                onClick={() => setShowNav(false)}
+            >
+                <nav
+                    className="header__links"
+                    onClick={(e) => e.stopPropagation()}
+                >
+                    <Link to="/">Главная</Link>
+                    <Link to="/filter">Поиск</Link>
+                    <Link to="/signin">Войти</Link>
+                    <Link to="/posts">Продукт</Link>
+                    <Link to="/post/create">Добавить продукт</Link>
+                    <Link to="/profile">Настройки</Link>
+                </nav>
+            </div>
+        </>
+    );
+};
+
+export default Header;
