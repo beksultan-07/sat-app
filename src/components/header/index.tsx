@@ -3,14 +3,14 @@ import { Link } from "react-router-dom";
 import { MenuOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Flex } from "antd";
 import logo from "../../assets/images/logo.png";
-import "./style.scss";
+import scss from "./style.module.scss";
 
 const Header: React.FC = () => {
     const [showNav, setShowNav] = useState(false);
 
     return (
         <>
-            <header className="header">
+            <header className={scss.header}>
                 <Flex justify="space-between" align="center">
                     <Button type="text" onClick={() => setShowNav(!showNav)}>
                         <MenuOutlined />
@@ -27,11 +27,11 @@ const Header: React.FC = () => {
             </header>
 
             <div
-                className={`wrap ${showNav ? "active" : ""}`}
+                className={`${scss.wrap} ${showNav ? scss.active : ""}`}
                 onClick={() => setShowNav(false)}
             >
                 <nav
-                    className="header__links"
+                    className={scss.header__links}
                     onClick={(e) => e.stopPropagation()}
                 >
                     <Link to="/">Главная</Link>
