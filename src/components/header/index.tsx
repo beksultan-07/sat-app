@@ -37,8 +37,8 @@ const Header: React.FC = () => {
                     <Link to="/">Главная</Link>
                     <Link to="/filter">Поиск</Link>
                     <Link to="/signin">Войти</Link>
-                    <Link to="/posts">Продукт</Link>
-                    <Link to="/post/create">Добавить продукт</Link>
+                    <Link to="/posts">Посты</Link>
+                    <Link to="/post/create">Добавить пост</Link>
                     <Link to="/profile">Настройки</Link>
                 </nav>
             </div>
