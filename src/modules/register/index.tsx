@@ -26,6 +26,7 @@ const RegisterModule = () => {
                 onSubmit={(e) => submitHandler(e)}
             >
                 <MyInput
+                    value={formData.email}
                     placeholder=""
                     title="Адрес электронной почты"
                     type="email"
@@ -35,6 +36,7 @@ const RegisterModule = () => {
                 />
 
                 <MyInput
+                    value={formData.password}
                     placeholder=""
                     title="Пароль"
                     type="password"
@@ -45,6 +47,7 @@ const RegisterModule = () => {
 
                 <MyInput
                     placeholder=""
+                    value={formData.confirmPassword}
                     title="Подтвердитe пароль"
                     type="password"
                     onChangeHandler={(value) =>

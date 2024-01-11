@@ -24,6 +24,7 @@ const SignInModule: React.FC = () => {
                 onSubmit={(e) => submitHandler(e)}
             >
                 <MyInput
+                    value={formData.email}
                     placeholder=""
                     title="Адрес электронной почты"
                     type="email"
@@ -33,6 +34,7 @@ const SignInModule: React.FC = () => {
                 />
 
                 <MyInput
+                    value={formData.password}
                     placeholder=""
                     title="Пароль"
                     type="password"

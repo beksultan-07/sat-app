@@ -7,15 +7,22 @@ import scss from "./style.module.scss";
 interface props {
     confirm: () => void;
     reject: () => void;
+    confirmText: string;
+    rejectText: string;
 }
 
-const BottomButtons: React.FC<props> = ({ confirm, reject }) => {
+const BottomButtons: React.FC<props> = ({
+    confirm,
+    reject,
+    confirmText,
+    rejectText,
+}) => {
     return (
         <div className={scss.wrap}>
             <Button onClick={reject} size="large" className={scss.reject__btn}>
-                Очистить
+                {rejectText}
             </Button>
-            <MyButton onClick={confirm}>Найти жилье</MyButton>
+            <MyButton onClick={confirm}>{confirmText}</MyButton>
         </div>
     );
 };

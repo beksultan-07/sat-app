@@ -1,0 +1,14 @@
+import React from "react";
+import scss from "./style.module.scss";
+
+const Head = () => {
+    return (
+        <div className={scss.head}>
+            <h1 className={scss.title}>
+                Недвижимость <br /> в Кыргызстане в аренду
+            </h1>
+        </div>
+    );
+};
+
+export default Head;
