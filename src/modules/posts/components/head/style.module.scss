@@ -1,0 +1,23 @@
+.top {
+    padding: 5px;
+
+    background: #262637;
+}
+
+.btn {
+    color: #fff;
+
+    font-size: 15.25px;
+    font-weight: 400;
+}
+
+.bottom {
+    padding: 10px 15px;
+    &__title {
+        color: #53535f;
+        font-size: 20.484px;
+        font-weight: 400;
+        line-height: 23px;
+        margin: 0 30px 0 0;
+    }
+}
