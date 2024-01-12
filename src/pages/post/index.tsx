@@ -1,7 +1,14 @@
 import React from "react";
+import Header from "../../components/header";
+import PostModule from "../../modules/post";
 
 const Post: React.FC = () => {
-    return <div>Post</div>;
+    return (
+        <>
+            <Header />
+            <PostModule />
+        </>
+    );
 };
 
 export default Post;

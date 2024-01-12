@@ -113,6 +113,8 @@ const FilterModule: React.FC = () => {
                 </Flex>
             </div>
             <BottomButtons
+                confirmText="Найти жилье"
+                rejectText="Очистить"
                 confirm={() => console.log(formData)}
                 reject={() => onClearHadnler()}
             />

@@ -1,0 +1,14 @@
+.wrap {
+    object-fit: cover;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+    margin: 0;
+    .btn {
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        background: #262637;
+        z-index: 11;
+    }
+}
