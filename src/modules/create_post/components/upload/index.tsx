@@ -61,6 +61,7 @@ const MyUpload: React.FC<Props> = ({ setPhotos }) => {
             <div style={{ marginTop: 8 }}>Upload</div>
         </button>
     );
+
     return (
         <>
             <Upload

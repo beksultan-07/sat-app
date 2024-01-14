@@ -21,6 +21,10 @@ interface post {
     id: number;
     city: string;
     address: string;
+    addressLocation: {
+        lng: number;
+        lat: number;
+    };
     propertyType: string;
     ownership: string;
     description: string;
@@ -38,6 +42,10 @@ const CreatePostModule = () => {
         id: new Date().getTime(),
         city: "",
         address: "",
+        addressLocation: {
+            lat: 41.2044,
+            lng: 74.7661,
+        },
         propertyType: "",
         ownership: "",
         description: "",
@@ -49,6 +57,34 @@ const CreatePostModule = () => {
         bathroomCount: 0,
         photos: [],
     });
+
+    const onClearHadnler = () => {
+        setFormData({
+            ...formData,
+            city: "",
+            addressLocation: {
+                lat: 41.2044,
+                lng: 74.7661,
+            },
+            address: "",
+            propertyType: "",
+            ownership: "",
+            description: "",
+            generalInfo: "",
+            area: 0,
+            roomCount: 0,
+            price: 0,
+            bedroomCount: 0,
+            bathroomCount: 0,
+            photos: [],
+        });
+    };
+
+    const clickMap = (lat?: number, lng?: number) => {
+        if (lat && lng) {
+            setFormData({ ...formData, addressLocation: { lat, lng } });
+        }
+    };
 
     return (
         <>
@@ -71,7 +107,11 @@ const CreatePostModule = () => {
                             setFormData({ ...formData, address: value })
                         }
                     />
-                    <MyMap />
+                    <MyMap
+                        clickedPlace={clickMap}
+                        lat={formData.addressLocation.lat}
+                        lng={formData.addressLocation.lng}
+                    />
                     <MyDropDown
                         handleChange={(value) =>
                             setFormData({ ...formData, propertyType: value })
@@ -171,7 +211,7 @@ const CreatePostModule = () => {
                 confirmText="Сохранить"
                 rejectText="Очистить"
                 confirm={() => console.log()}
-                reject={() => console.log()}
+                reject={() => onClearHadnler()}
             />
         </>
     );

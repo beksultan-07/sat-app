@@ -38,6 +38,10 @@ const FilterModule: React.FC = () => {
         });
     };
 
+    const searchHandler = () => {
+        console.log(formData);
+    };
+
     return (
         <>
             <Head
@@ -115,7 +119,7 @@ const FilterModule: React.FC = () => {
             <BottomButtons
                 confirmText="Найти жилье"
                 rejectText="Очистить"
-                confirm={() => console.log(formData)}
+                confirm={() => searchHandler()}
                 reject={() => onClearHadnler()}
             />
         </>

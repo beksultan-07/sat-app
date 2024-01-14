@@ -1,8 +1,29 @@
 import React from "react";
 import scss from "./style.module.scss";
-import { Flex } from "antd";
+import { Button, Flex } from "antd";
 import { HeartOutlined, PhoneOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
+
+const RenderImage = ({ images }: { images: string[] }) => {
+    if (images.length > 2) {
+        const threeImages = images.slice(1, 4);
+
+        return threeImages.map((link, idx) => (
+            <div key={idx} className={scss.image}>
+                <img src={link} alt="" />
+            </div>
+        ));
+    }
+};
+
+const normalizePrice = (price: string) => {
+    return price
+        .split("")
+        .reverse()
+        .map((el, idx) => (idx !== 0 && idx % 3 === 0 ? el + "," : el))
+        .reverse()
+        .join("");
+};
 
 interface Props {
     images: string[];
@@ -21,27 +42,13 @@ const Card: React.FC<Props> = ({
     date,
     phone,
 }) => {
-    const normalizePrice = (price: string) => {
-        return price
-            .split("")
-            .reverse()
-            .map((el, idx) => (idx !== 0 && idx % 3 === 0 ? el + "," : el))
-            .reverse()
-            .join("");
-    };
     return (
         <li className={scss.item}>
             <div className={scss.big__image}>
                 <img src={images[0]} alt="" />
             </div>
             <Flex gap={5} className={scss.images}>
-                {images.length > 2
-                    ? images.slice(1, 4).map((link, idx) => (
-                          <div key={idx} className={scss.image}>
-                              <img src={link} alt="" />
-                          </div>
-                      ))
-                    : null}
+                <RenderImage images={images} />
             </Flex>
             <Flex className={scss.price__and__link} justify="space-between">
                 <Flex
@@ -68,15 +75,19 @@ const Card: React.FC<Props> = ({
                 <span className={scss.date}>Добавлено {date}</span>
                 <Flex justify="space-between" className={scss.bottom}>
                     <a href={"tel:" + phone}>
-                        <button className={scss.bottom__btn}>
-                            <PhoneOutlined />
-                            Позвонить
-                        </button>
+                        <Button className={scss.bottom__btn}>
+                            <Flex align="center" gap={8}>
+                                <PhoneOutlined />
+                                Позвонить
+                            </Flex>
+                        </Button>
                     </a>
-                    <button className={scss.bottom__btn}>
-                        <HeartOutlined />
-                        Сохранить
-                    </button>
+                    <Button className={scss.bottom__btn}>
+                        <Flex align="center" gap={8}>
+                            <HeartOutlined />
+                            Сохранить
+                        </Flex>
+                    </Button>
                 </Flex>
             </Flex>
         </li>

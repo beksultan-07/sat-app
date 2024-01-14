@@ -2,7 +2,13 @@ import React from "react";
 
 import { APIProvider, Map } from "@vis.gl/react-google-maps";
 
-const MyMap = ({ lat = 41.2044, lng = 74.7661 }) => {
+interface Props {
+    lat: number;
+    lng: number;
+    clickedPlace: (lat?: number, lng?: number) => void;
+}
+
+const MyMap: React.FC<Props> = ({ lat, lng, clickedPlace }) => {
     return (
         <div style={{ height: "180px" }}>
             <APIProvider apiKey={"AIzaSyCoxB02mXlIQ3UuJy7MJpCYaDm-FqgC78E"}>
@@ -11,6 +17,9 @@ const MyMap = ({ lat = 41.2044, lng = 74.7661 }) => {
                     center={{ lat, lng }}
                     gestureHandling={"greedy"}
                     disableDefaultUI={true}
+                    onClick={(e) =>
+                        clickedPlace(e.detail.latLng?.lat, e.detail.latLng?.lng)
+                    }
                 />
             </APIProvider>
         </div>

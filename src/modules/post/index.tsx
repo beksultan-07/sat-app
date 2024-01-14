@@ -22,6 +22,10 @@ const post = {
     bathroomCount: 1,
     bedroomCount: 3,
     ownership: "Квартира",
+    addressLocation: {
+        lat: 41.2044,
+        lng: 74.7661,
+    },
     propertyType: "Право собственности",
     description: `
         8 кроватей \n
@@ -37,7 +41,13 @@ const PostModule = () => {
         <div className={scss.wrap}>
             <ImagesSlider images={post.photos} />
 
-            <Head date={post.date} price={post.price} title={post.address} />
+            <Head
+                mapLink="#"
+                paymentLink="#"
+                date={post.date}
+                price={post.price}
+                title={post.address}
+            />
 
             <Info
                 bathroomCount={post.bathroomCount}
@@ -47,7 +57,11 @@ const PostModule = () => {
             />
             <Description text={post.description} />
             <GeneralInfo text={post.generalInfo} />
-            <MyMap />
+            <MyMap
+                clickedPlace={(lat, lng) => console.log(lat, lng)}
+                lat={post.addressLocation.lat}
+                lng={post.addressLocation.lng}
+            />
         </div>
     );
 };

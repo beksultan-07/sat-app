@@ -6,13 +6,16 @@ import logo from "../../assets/images/logo.png";
 import scss from "./style.module.scss";
 
 const Header: React.FC = () => {
-    const [showNav, setShowNav] = useState(false);
+    const [showLinks, setShowLinks] = useState(false);
 
     return (
         <>
             <header className={scss.header}>
                 <Flex justify="space-between" align="center">
-                    <Button type="text" onClick={() => setShowNav(!showNav)}>
+                    <Button
+                        type="text"
+                        onClick={() => setShowLinks(!showLinks)}
+                    >
                         <MenuOutlined />
                     </Button>
                     <Link to="/">
@@ -27,8 +30,8 @@ const Header: React.FC = () => {
             </header>
 
             <div
-                className={`${scss.wrap} ${showNav ? scss.active : ""}`}
-                onClick={() => setShowNav(false)}
+                className={`${scss.wrap} ${showLinks ? scss.active : ""}`}
+                onClick={() => setShowLinks(false)}
             >
                 <nav
                     className={scss.header__links}

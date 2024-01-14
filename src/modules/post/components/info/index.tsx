@@ -36,9 +36,7 @@ const Info: React.FC<Props> = ({
                     <Text>{bathroomCount}</Text>
                 </Flex>
                 <Flex vertical gap={8} flex={1}>
-                    <Text style={{ fontSize: "12px" }}>
-                        ВладеВанные комнаты
-                    </Text>
+                    <Text style={{ fontSize: "12px" }}>Ванные комнаты</Text>
                     <Text>{bedroomCount}</Text>
                 </Flex>
             </Flex>

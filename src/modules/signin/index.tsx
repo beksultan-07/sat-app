@@ -2,8 +2,13 @@ import React, { useState } from "react";
 import scss from "./style.module.scss";
 import MyInput from "../../components/input";
 import MyButton from "../../components/button";
+import { Typography } from "antd";
+
+const { Title } = Typography;
 
 const SignInModule: React.FC = () => {
+    const [errorText, setErrorText] = useState("");
+
     const [formData, setFormData] = useState({
         email: "",
         password: "",
@@ -11,7 +16,12 @@ const SignInModule: React.FC = () => {
 
     const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        console.log(formData);
+        const values = Object.values(formData);
+        if (values.every((el) => el)) {
+            console.log(formData);
+        } else {
+            setErrorText("Заполните все поля");
+        }
     };
 
     return (
@@ -23,6 +33,11 @@ const SignInModule: React.FC = () => {
                 className={scss.form}
                 onSubmit={(e) => submitHandler(e)}
             >
+                {errorText ? (
+                    <Title level={5} type="danger">
+                        {errorText}
+                    </Title>
+                ) : null}
                 <MyInput
                     value={formData.email}
                     placeholder=""
