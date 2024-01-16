@@ -21,10 +21,10 @@ interface post {
     id: number;
     city: string;
     address: string;
-    addressLocation: {
+    location: {
         lng: number;
         lat: number;
-    };
+    } | null;
     propertyType: string;
     ownership: string;
     description: string;
@@ -42,10 +42,7 @@ const CreatePostModule = () => {
         id: new Date().getTime(),
         city: "",
         address: "",
-        addressLocation: {
-            lat: 41.2044,
-            lng: 74.7661,
-        },
+        location: null,
         propertyType: "",
         ownership: "",
         description: "",
@@ -62,10 +59,7 @@ const CreatePostModule = () => {
         setFormData({
             ...formData,
             city: "",
-            addressLocation: {
-                lat: 41.2044,
-                lng: 74.7661,
-            },
+            location: null,
             address: "",
             propertyType: "",
             ownership: "",
@@ -80,10 +74,13 @@ const CreatePostModule = () => {
         });
     };
 
-    const clickMap = (lat?: number, lng?: number) => {
-        if (lat && lng) {
-            setFormData({ ...formData, addressLocation: { lat, lng } });
-        }
+    const bishkekLocation = { lat: 41.2044, lng: 74.7661 };
+
+    const clickMapHandler = (
+        location: google.maps.LatLngLiteral,
+        address: string
+    ) => {
+        setFormData({ ...formData, location, address });
     };
 
     return (
@@ -108,9 +105,9 @@ const CreatePostModule = () => {
                         }
                     />
                     <MyMap
-                        clickedPlace={clickMap}
-                        lat={formData.addressLocation.lat}
-                        lng={formData.addressLocation.lng}
+                        cameraLocation={bishkekLocation}
+                        location={formData.location}
+                        clickedPlace={clickMapHandler}
                     />
                     <MyDropDown
                         handleChange={(value) =>
@@ -210,7 +207,7 @@ const CreatePostModule = () => {
             <BottomButtons
                 confirmText="Сохранить"
                 rejectText="Очистить"
-                confirm={() => console.log()}
+                confirm={() => console.log(formData)}
                 reject={() => onClearHadnler()}
             />
         </>
