@@ -1,29 +1,29 @@
 export const regions = [
-    { value: "chui", label: "Чуйская область" },
-    { value: "osh", label: "Ошская область" },
-    { value: "jalalabad", label: "Жалал-Абадская область" },
-    { value: "naryn", label: "Нарынская область" },
-    { value: "talas", label: "Таласская область" },
-    { value: "issykKul", label: "Иссык-Кульская область" },
-    { value: "batken", label: "Баткенская область" },
+    { value: "Чуй", label: "Чуйская область" },
+    { value: "Ош", label: "Ошская область" },
+    { value: "Жалал-Абад", label: "Жалал-Абадская область" },
+    { value: "Нарын", label: "Нарынская область" },
+    { value: "Талас", label: "Таласская область" },
+    { value: "Иссык-Куль", label: "Иссык-Кульская область" },
+    { value: "Баткен", label: "Баткенская область" },
 ];
 
 export const propertyTypes = [
-    { value: "apartment", label: "Квартира" },
-    { value: "house", label: "Дом" },
-    { value: "office", label: "Офис" },
-    { value: "commercial", label: "Коммерческая недвижимость" },
-    { value: "land", label: "Земельный участок" },
-    { value: "garage", label: "Гараж" },
-    { value: "other", label: "Другое" },
+    { value: "Квартира", label: "Квартира" },
+    { value: "Дом", label: "Дом" },
+    { value: "Офис", label: "Офис" },
+    { value: "Коммерческая недвижимость", label: "Коммерческая недвижимость" },
+    { value: "Земельный участок", label: "Земельный участок" },
+    { value: "Гараж", label: "Гараж" },
+    { value: "Другое", label: "Другое" },
 ];
 
 export const ownershipTypes = [
-    { value: "ownership", label: "Собственность" },
-    { value: "rent", label: "Аренда" },
-    { value: "leasehold", label: "Аренда с правом выкупа" },
-    { value: "cooperative", label: "Кооператив" },
-    { value: "sharedOwnership", label: "Долевая собственность" },
+    { value: "Собственность", label: "Собственность" },
+    { value: "Аренда", label: "Аренда" },
+    { value: "Аренда с правом выкупа", label: "Аренда с правом выкупа" },
+    { value: "Кооператив", label: "Кооператив" },
+    { value: "Долевая собственность", label: "Долевая собственность" },
 ];
 
 export const roomCountOptions = [

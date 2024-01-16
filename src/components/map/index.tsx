@@ -61,9 +61,9 @@ const MyMap: React.FC<Props> = ({
 
     return (
         <div style={{ height: "180px" }}>
-            <APIProvider apiKey={"AIzaSyCoxB02mXlIQ3UuJy7MJpCYaDm-FqgC78E"}>
+            <APIProvider apiKey={import.meta.env.VITE_GOOGLE_API_KEY}>
                 <Map
-                    zoom={5}
+                    zoom={8}
                     center={{
                         lat: cameraLocation.lat,
                         lng: cameraLocation.lng,

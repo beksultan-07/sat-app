@@ -20,7 +20,7 @@ import MyButton from "../../components/button";
 
 interface post {
     id: number;
-    city: string;
+    region: string;
     address: string;
     location: {
         lng: number;
@@ -50,7 +50,7 @@ const getLocationVariants = (address: string) => {
     return fetch(
         `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
             address
-        )}&key=${"AIzaSyCoxB02mXlIQ3UuJy7MJpCYaDm-FqgC78E"}`
+        )}&key=${import.meta.env.VITE_GOOGLE_API_KEY}`
     )
         .then((res) => res.json())
         .then((res: geocodingResponse) => res);
@@ -59,7 +59,7 @@ const getLocationVariants = (address: string) => {
 const CreatePostModule: React.FC = () => {
     const [formData, setFormData] = useState<post>({
         id: new Date().getTime(),
-        city: "",
+        region: "",
         address: "",
         location: null,
         propertyType: "",
@@ -77,10 +77,15 @@ const CreatePostModule: React.FC = () => {
         google.maps.LatLngLiteral[]
     >([]);
 
+    const [cameraLocation, setCameraLocation] = useState({
+        lat: 41.2044,
+        lng: 74.7661,
+    });
+
     const onClearHadnler = () => {
         setFormData({
             ...formData,
-            city: "",
+            region: "",
             location: null,
             address: "",
             propertyType: "",
@@ -96,8 +101,6 @@ const CreatePostModule: React.FC = () => {
         });
     };
 
-    const bishkekLocation = { lat: 41.2044, lng: 74.7661 };
-
     const clickMapHandler = (
         location: google.maps.LatLngLiteral,
         address: string
@@ -111,7 +114,7 @@ const CreatePostModule: React.FC = () => {
         let address = formData.address.toLowerCase();
 
         if (!address.split(" ").includes("кыргызстан")) {
-            address = "кыргызстан " + address;
+            address = "кыргызстан " + formData.region + address;
         }
 
         const res = await getLocationVariants(address);
@@ -120,15 +123,21 @@ const CreatePostModule: React.FC = () => {
         setLocationVariants(locations);
     };
 
+    const regionSearchHandler = async (region: string) => {
+        const res = await getLocationVariants("кыргызстан " + region);
+
+        if (res.results.length > 0) {
+            setCameraLocation(res.results[0].geometry.location);
+        }
+    };
+
     return (
         <>
             <Head />
             <div className={scss.content}>
                 <Flex vertical gap={32}>
                     <MyDropDown
-                        handleChange={(value) =>
-                            setFormData({ ...formData, city: value })
-                        }
+                        handleChange={(value) => regionSearchHandler(value)}
                         defaultName="Любой"
                         items={regions}
                         title="Введите название города"
@@ -144,7 +153,7 @@ const CreatePostModule: React.FC = () => {
                     <MyButton onClick={searchAddressHandler}>Search</MyButton>
                     <MyMap
                         locationVariants={locationVariants}
-                        cameraLocation={bishkekLocation}
+                        cameraLocation={cameraLocation}
                         location={formData.location}
                         clickedPlace={clickMapHandler}
                     />
