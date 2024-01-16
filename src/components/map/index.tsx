@@ -9,6 +9,7 @@ interface Props {
         address: string
     ) => void;
     location: google.maps.LatLngLiteral | null;
+    locationVariants: Array<google.maps.LatLngLiteral>;
 }
 const getAddress = (location: google.maps.LatLngLiteral) => {
     return fetch(
@@ -22,7 +23,12 @@ const getAddress = (location: google.maps.LatLngLiteral) => {
         });
 };
 
-const MyMap: React.FC<Props> = ({ cameraLocation, clickedPlace, location }) => {
+const MyMap: React.FC<Props> = ({
+    cameraLocation,
+    clickedPlace,
+    location,
+    locationVariants,
+}) => {
     const [markerPosition, setMarkerPosition] = useState<{
         lat: number;
         lng: number;
@@ -41,7 +47,15 @@ const MyMap: React.FC<Props> = ({ cameraLocation, clickedPlace, location }) => {
             const address: string = await getAddress(latLng);
             clickedPlace(latLng, address);
             setMarkerPosition({ lat, lng });
-            console.log(address);
+        }
+    };
+
+    const markerClickHandler = (e: google.maps.MapMouseEvent) => {
+        if (e.latLng) {
+            const lng = e.latLng.lng();
+            const lat = e.latLng.lat();
+
+            mapClickHandler({ lng, lat });
         }
     };
 
@@ -58,7 +72,15 @@ const MyMap: React.FC<Props> = ({ cameraLocation, clickedPlace, location }) => {
                     disableDefaultUI={true}
                     onClick={(e) => mapClickHandler(e.detail.latLng)}
                 >
-                    {markerPosition && <Marker position={markerPosition} />}
+                    {locationVariants.map((el, idx) => (
+                        <Marker position={el} key={idx} />
+                    ))}
+                    {markerPosition && (
+                        <Marker
+                            position={markerPosition}
+                            onClick={(e) => markerClickHandler(e)}
+                        />
+                    )}
                 </Map>
             </APIProvider>
         </div>

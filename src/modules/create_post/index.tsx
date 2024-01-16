@@ -16,6 +16,7 @@ import {
     roomCountOptions,
 } from "./data/data";
 import MyUpload from "./components/upload";
+import MyButton from "../../components/button";
 
 interface post {
     id: number;
@@ -37,6 +38,24 @@ interface post {
     photos: string[];
 }
 
+interface geocodingResponse {
+    results: {
+        geometry: {
+            location: google.maps.LatLngLiteral;
+        };
+    }[];
+}
+
+const getLocationVariants = (address: string) => {
+    return fetch(
+        `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
+            address
+        )}&key=${"AIzaSyCoxB02mXlIQ3UuJy7MJpCYaDm-FqgC78E"}`
+    )
+        .then((res) => res.json())
+        .then((res: geocodingResponse) => res);
+};
+
 const CreatePostModule: React.FC = () => {
     const [formData, setFormData] = useState<post>({
         id: new Date().getTime(),
@@ -54,6 +73,9 @@ const CreatePostModule: React.FC = () => {
         bathroomCount: 0,
         photos: [],
     });
+    const [locationVariants, setLocationVariants] = useState<
+        google.maps.LatLngLiteral[]
+    >([]);
 
     const onClearHadnler = () => {
         setFormData({
@@ -80,7 +102,22 @@ const CreatePostModule: React.FC = () => {
         location: google.maps.LatLngLiteral,
         address: string
     ) => {
+        setLocationVariants([]);
+
         setFormData({ ...formData, location, address });
+    };
+
+    const searchAddressHandler = async () => {
+        let address = formData.address.toLowerCase();
+
+        if (!address.split(" ").includes("кыргызстан")) {
+            address = "кыргызстан " + address;
+        }
+
+        const res = await getLocationVariants(address);
+
+        const locations = res.results.map((el) => el.geometry.location);
+        setLocationVariants(locations);
     };
 
     return (
@@ -104,7 +141,9 @@ const CreatePostModule: React.FC = () => {
                             setFormData({ ...formData, address: value })
                         }
                     />
+                    <MyButton onClick={searchAddressHandler}>Search</MyButton>
                     <MyMap
+                        locationVariants={locationVariants}
                         cameraLocation={bishkekLocation}
                         location={formData.location}
                         clickedPlace={clickMapHandler}
