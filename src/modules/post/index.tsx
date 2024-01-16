@@ -58,9 +58,13 @@ const PostModule = () => {
             <Description text={post.description} />
             <GeneralInfo text={post.generalInfo} />
             <MyMap
-                clickedPlace={(lat, lng) => console.log(lat, lng)}
-                lat={post.addressLocation.lat}
-                lng={post.addressLocation.lng}
+                locationVariants={[]}
+                cameraLocation={{ lat: 41.2044, lng: 74.7661 }}
+                location={{
+                    lat: 42.85570724725795,
+                    lng: 74.58515167236328,
+                }}
+                clickedPlace={() => console.log()}
             />
         </div>
     );
