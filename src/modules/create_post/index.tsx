@@ -37,7 +37,7 @@ interface post {
     photos: string[];
 }
 
-const CreatePostModule = () => {
+const CreatePostModule: React.FC = () => {
     const [formData, setFormData] = useState<post>({
         id: new Date().getTime(),
         city: "",
