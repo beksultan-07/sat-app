@@ -3,6 +3,7 @@ import scss from "./style.module.scss";
 import { Button, Flex } from "antd";
 import { HeartOutlined, PhoneOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const RenderImage = ({ images }: { images: string[] }) => {
     if (images.length > 2) {
@@ -42,6 +43,7 @@ const Card: React.FC<Props> = ({
     date,
     phone,
 }) => {
+    const { t } = useTranslation();
     return (
         <li className={scss.item}>
             <div className={scss.big__image}>
@@ -63,29 +65,33 @@ const Card: React.FC<Props> = ({
                     <span className={scss.price__text}>сом</span>
                 </Flex>
                 <Link to={"/post/1"} className={scss.btn}>
-                    открыть
+                    {t("lang29")}
                 </Link>
             </Flex>
             <Flex gap={7} vertical align="flex-start" className={scss.info}>
                 <span className={scss.state}>{address}</span>
-                <span className={scss.state}>{rooms} комнаты</span>
+                <span className={scss.state}>
+                    {rooms} {t("lang20")}
+                </span>
 
                 <span className={scss.new}>новый</span>
 
-                <span className={scss.date}>Добавлено {date}</span>
+                <span className={scss.date}>
+                    {t("lang30")} {date}
+                </span>
                 <Flex justify="space-between" className={scss.bottom}>
                     <a href={"tel:" + phone}>
                         <Button className={scss.bottom__btn}>
                             <Flex align="center" gap={8}>
                                 <PhoneOutlined />
-                                Позвонить
+                                {t("lang31")}
                             </Flex>
                         </Button>
                     </a>
                     <Button className={scss.bottom__btn}>
                         <Flex align="center" gap={8}>
                             <HeartOutlined />
-                            Сохранить
+                            {t("lang32")}
                         </Flex>
                     </Button>
                 </Flex>

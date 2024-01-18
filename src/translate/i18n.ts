@@ -9,7 +9,7 @@ const resources = {
             ...ru,
         },
     },
-    en: {
+    kg: {
         translation: {
             ...kg,
         },

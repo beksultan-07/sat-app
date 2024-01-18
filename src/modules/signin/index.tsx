@@ -3,6 +3,7 @@ import scss from "./style.module.scss";
 import MyInput from "../../components/input";
 import MyButton from "../../components/button";
 import { Typography } from "antd";
+import { useTranslation } from "react-i18next";
 
 const { Title } = Typography;
 
@@ -13,6 +14,8 @@ const SignInModule: React.FC = () => {
         email: "",
         password: "",
     });
+
+    const { t } = useTranslation();
 
     const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -41,7 +44,7 @@ const SignInModule: React.FC = () => {
                 <MyInput
                     value={formData.email}
                     placeholder=""
-                    title="Адрес электронной почты"
+                    title={t("lang10")}
                     type="email"
                     onChangeHandler={(value) =>
                         setFormData({ ...formData, email: value })
@@ -51,7 +54,7 @@ const SignInModule: React.FC = () => {
                 <MyInput
                     value={formData.password}
                     placeholder=""
-                    title="Пароль"
+                    title={t("lang11")}
                     type="password"
                     onChangeHandler={(value) =>
                         setFormData({ ...formData, password: value })

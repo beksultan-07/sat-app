@@ -4,10 +4,11 @@ import { MenuOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Flex } from "antd";
 import logo from "../../assets/images/logo.png";
 import scss from "./style.module.scss";
+import { useTranslation } from "react-i18next";
 
 const Header: React.FC = () => {
     const [showLinks, setShowLinks] = useState(false);
-
+    const { i18n } = useTranslation();
     return (
         <>
             <header className={scss.header}>
@@ -18,6 +19,14 @@ const Header: React.FC = () => {
                     >
                         <MenuOutlined />
                     </Button>
+                    <Flex>
+                        <Button onClick={() => i18n.changeLanguage("ru")}>
+                            ru
+                        </Button>
+                        <Button onClick={() => i18n.changeLanguage("kg")}>
+                            kg
+                        </Button>
+                    </Flex>
                     <Link to="/">
                         <img src={logo} alt="" />
                     </Link>

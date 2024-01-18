@@ -8,6 +8,7 @@ import MyDropDown from "../../components/dropdown/index";
 import { propertyTypes } from "../../components/dropdown/data";
 import FromTo from "./components/FromTo";
 import BottomButtons from "../../components/bottom_buttons";
+import { useTranslation } from "react-i18next";
 
 const FilterModule: React.FC = () => {
     const [formData, setFormData] = useState({
@@ -22,6 +23,8 @@ const FilterModule: React.FC = () => {
         date: "",
         rented: false,
     });
+
+    const { t } = useTranslation();
 
     const onClearHadnler = () => {
         setFormData({
@@ -54,8 +57,8 @@ const FilterModule: React.FC = () => {
                     <MyInput
                         value={formData.area}
                         type="number"
-                        placeholder="Укажите квадратуру в метрах"
-                        title="Квадратура"
+                        placeholder={t("lang17")}
+                        title={t("lang16")}
                         onChangeHandler={(value) =>
                             setFormData({ ...formData, area: value })
                         }
@@ -64,14 +67,14 @@ const FilterModule: React.FC = () => {
                         handleChange={(value) =>
                             setFormData({ ...formData, propertyType: value })
                         }
-                        defaultName="Любоe"
+                        defaultName={t("lang22")}
                         items={propertyTypes}
-                        title="Тип недвижимости"
+                        title={t("lang18")}
                     />
                     <FromTo
                         fromValue={formData.roomCountFrom}
                         toValue={formData.roomCountTo}
-                        title="Комнаты"
+                        title={t("lang20")}
                         changeFromHandler={(value) =>
                             setFormData({ ...formData, roomCountFrom: +value })
                         }
@@ -82,7 +85,7 @@ const FilterModule: React.FC = () => {
                     <FromTo
                         fromValue={formData.priceFrom}
                         toValue={formData.priceTo}
-                        title="Цена"
+                        title={t("lang28")}
                         changeFromHandler={(value) =>
                             setFormData({ ...formData, priceFrom: +value })
                         }
@@ -100,7 +103,7 @@ const FilterModule: React.FC = () => {
                             })
                         }
                         placeholder=""
-                        title="По дате добавления"
+                        title={t("lang21")}
                         type="date"
                     />
                     <Checkbox
@@ -112,13 +115,13 @@ const FilterModule: React.FC = () => {
                         }
                         checked={formData.rented}
                     >
-                        Включая арендованные жилье
+                        {t("lang23")}
                     </Checkbox>
                 </Flex>
             </div>
             <BottomButtons
-                confirmText="Найти жилье"
-                rejectText="Очистить"
+                confirmText={t("lang25")}
+                rejectText={t("lang24")}
                 confirm={() => searchHandler()}
                 reject={() => onClearHadnler()}
             />

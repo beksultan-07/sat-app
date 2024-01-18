@@ -2,6 +2,7 @@ import { CalculatorOutlined, EnvironmentOutlined } from "@ant-design/icons";
 import { Flex, Typography } from "antd";
 import React from "react";
 import scss from "./style.module.scss";
+import { useTranslation } from "react-i18next";
 
 const { Text, Title, Link } = Typography;
 
@@ -29,6 +30,7 @@ const Head: React.FC<Props> = ({
     mapLink,
     paymentLink,
 }) => {
+    const { t } = useTranslation();
     return (
         <>
             <Flex vertical gap={8}>
@@ -53,7 +55,9 @@ const Head: React.FC<Props> = ({
                         Ежемесячные выплаты по ипотеке
                     </Link>
                 </Flex>
-                <Text>Добавлено {date}</Text>
+                <Text>
+                    {t("lang30")} {date}
+                </Text>
             </Flex>
         </>
     );

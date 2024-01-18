@@ -4,10 +4,13 @@ import MyInput from "../../components/input";
 import MyButton from "../../components/button";
 import sofa from "./assets/image.png";
 import { Typography } from "antd";
+import { useTranslation } from "react-i18next";
 
 const { Title } = Typography;
 const RegisterModule = () => {
     const [errorText, setErrorText] = useState("");
+
+    const { t } = useTranslation();
 
     const [formData, setFormData] = useState({
         email: "",
@@ -27,7 +30,7 @@ const RegisterModule = () => {
 
     return (
         <div className={scss.wrap}>
-            <h2 className={scss.title}>Зарегистрируйте аккаунт</h2>
+            <h2 className={scss.title}>{t("lang9")}</h2>
 
             <form
                 action="#"
@@ -42,7 +45,7 @@ const RegisterModule = () => {
                 <MyInput
                     value={formData.email}
                     placeholder=""
-                    title="Адрес электронной почты"
+                    title={t("lang10")}
                     type="email"
                     onChangeHandler={(value) =>
                         setFormData({ ...formData, email: value })
@@ -52,7 +55,7 @@ const RegisterModule = () => {
                 <MyInput
                     value={formData.password}
                     placeholder=""
-                    title="Пароль"
+                    title={t("lang11")}
                     type="password"
                     onChangeHandler={(value) =>
                         setFormData({ ...formData, password: value })

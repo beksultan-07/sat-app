@@ -24,7 +24,12 @@ const ImagesSlider: React.FC<Props> = ({ images }) => {
             >
                 {images.map((el, idx) => (
                     <SwiperSlide key={idx}>
-                        <Image height={240} width="100%" src={el} />
+                        <Image
+                            height={240}
+                            width="100%"
+                            src={el}
+                            className={scss.image}
+                        />
                     </SwiperSlide>
                 ))}
                 <Button type="primary" shape="round" className={scss.btn}>

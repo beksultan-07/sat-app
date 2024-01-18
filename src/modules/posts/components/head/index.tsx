@@ -2,6 +2,7 @@ import React from "react";
 import scss from "./style.module.scss";
 import { Button, Dropdown, Flex, Input } from "antd";
 import { CaretDownOutlined } from "@ant-design/icons";
+import { useTranslation } from "react-i18next";
 
 const items = [
     {
@@ -24,6 +25,7 @@ interface Props {
     results: number | string;
 }
 const Head: React.FC<Props> = ({ inputData, onChange, results }) => {
+    const { t } = useTranslation();
     return (
         <div className={scss.wrap}>
             <Flex className={scss.top}>
@@ -38,10 +40,12 @@ const Head: React.FC<Props> = ({ inputData, onChange, results }) => {
                 </Button>
             </Flex>
             <Flex align="center" justify="flex-start" className={scss.bottom}>
-                <h4 className={scss.bottom__title}>{results} Результатов</h4>
+                <h4 className={scss.bottom__title}>
+                    {results} {t("lang26")}
+                </h4>
                 <Dropdown menu={{ items }} placement="bottom">
                     <Button type="text">
-                        Новые
+                        {t("lang27")}
                         <CaretDownOutlined />
                     </Button>
                 </Dropdown>

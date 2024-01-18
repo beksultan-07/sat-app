@@ -17,6 +17,7 @@ import {
 } from "./data/data";
 import MyUpload from "./components/upload";
 import MyButton from "../../components/button";
+import { useTranslation } from "react-i18next";
 
 interface post {
     id: number;
@@ -82,6 +83,8 @@ const CreatePostModule: React.FC = () => {
         lng: 74.7661,
     });
 
+    const { t } = useTranslation();
+
     const onClearHadnler = () => {
         setFormData({
             ...formData,
@@ -138,14 +141,14 @@ const CreatePostModule: React.FC = () => {
                 <Flex vertical gap={32}>
                     <MyDropDown
                         handleChange={(value) => regionSearchHandler(value)}
-                        defaultName="Любой"
+                        defaultName={t("lang22")}
                         items={regions}
-                        title="Введите название города"
+                        title={t("lang33")}
                     />
                     <MyInput
                         value={formData.address}
-                        title="Адрес"
-                        placeholder="Укажите адрес "
+                        title={t("lang34")}
+                        placeholder="Укажите адрес"
                         onChangeHandler={(value) =>
                             setFormData({ ...formData, address: value })
                         }
@@ -161,20 +164,20 @@ const CreatePostModule: React.FC = () => {
                         handleChange={(value) =>
                             setFormData({ ...formData, propertyType: value })
                         }
-                        defaultName="Любое"
+                        defaultName={t("lang19")}
                         items={propertyTypes}
-                        title="Тип недвижимостиа"
+                        title={t("lang35")}
                     />
                     <MyDropDown
                         handleChange={(value) =>
                             setFormData({ ...formData, ownership: value })
                         }
-                        defaultName="Владение"
+                        defaultName={t("lang36")}
                         items={ownershipTypes}
                         title="Право собственности"
                     />
                     <MyInput
-                        title="Описание"
+                        title={t("lang37")}
                         placeholder="Опишите недвижимость"
                         value={formData.description}
                         onChangeHandler={(value) =>
@@ -182,7 +185,7 @@ const CreatePostModule: React.FC = () => {
                         }
                     />
                     <MyInput
-                        title="Общая информация о недвижимости"
+                        title={t("lang38")}
                         placeholder="Добавьте общую информацию"
                         value={formData.generalInfo}
                         onChangeHandler={(value) =>
@@ -190,7 +193,7 @@ const CreatePostModule: React.FC = () => {
                         }
                     />
                     <MyInput
-                        title="Квадратура"
+                        title={t("lang16")}
                         type="number"
                         placeholder="Укажите квадратуру в метрах"
                         value={String(formData.area)}
@@ -205,12 +208,12 @@ const CreatePostModule: React.FC = () => {
                             }
                             defaultName="-"
                             items={roomCountOptions}
-                            title="Кол-во комнат"
+                            title={t("lang39")}
                         />
                         <MyInput
                             value={String(formData.price)}
                             type="number"
-                            title="Цена"
+                            title={t("lang28")}
                             placeholder="-"
                             onChangeHandler={(value) =>
                                 setFormData({ ...formData, price: +value })
@@ -227,7 +230,7 @@ const CreatePostModule: React.FC = () => {
                             }
                             defaultName="-"
                             items={bedroomCountOptions}
-                            title="Кол-во спален"
+                            title={t("lang39")}
                         />
                         <MyDropDown
                             handleChange={(value) =>
@@ -238,7 +241,7 @@ const CreatePostModule: React.FC = () => {
                             }
                             defaultName="-"
                             items={bathroomCountOptions}
-                            title="Кол-во ванных комнат"
+                            title={t("lang40")}
                         />
                     </Flex>
 
@@ -253,8 +256,8 @@ const CreatePostModule: React.FC = () => {
                 </Flex>
             </div>
             <BottomButtons
-                confirmText="Сохранить"
-                rejectText="Очистить"
+                confirmText={t("lang32")}
+                rejectText={t("lang24")}
                 confirm={() => console.log(formData)}
                 reject={() => onClearHadnler()}
             />
