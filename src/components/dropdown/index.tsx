@@ -21,7 +21,7 @@ const MyDropDown: React.FC<Props> = ({
     handleChange,
 }) => {
     return (
-        <Flex vertical gap={12} className={scss.wrap}>
+        <Flex vertical gap={12} className={scss.wrap} justify="space-between">
             <Text>{title}</Text>
             <Select
                 size="large"

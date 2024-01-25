@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { PlusOutlined } from "@ant-design/icons";
-import { Modal, Upload } from "antd";
+import { Flex, Modal, Typography, Upload } from "antd";
 import type { RcFile, UploadProps } from "antd/es/upload";
 import type { UploadFile } from "antd/es/upload/interface";
 
@@ -12,11 +12,14 @@ const getBase64 = (file: RcFile): Promise<string> =>
         reader.onerror = (error) => reject(error);
     });
 
+const { Title } = Typography;
+
 interface Props {
     setPhotos: (arr: Array<string>) => void;
+    title: string;
 }
 
-const MyUpload: React.FC<Props> = ({ setPhotos }) => {
+const MyUpload: React.FC<Props> = ({ setPhotos, title }) => {
     const [previewOpen, setPreviewOpen] = useState(false);
     const [previewImage, setPreviewImage] = useState("");
     const [previewTitle, setPreviewTitle] = useState("");
@@ -63,7 +66,8 @@ const MyUpload: React.FC<Props> = ({ setPhotos }) => {
     );
 
     return (
-        <>
+        <Flex vertical gap={15}>
+            <Title level={5}>{title}</Title>
             <Upload
                 action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
                 listType="picture-card"
@@ -73,6 +77,7 @@ const MyUpload: React.FC<Props> = ({ setPhotos }) => {
             >
                 {fileList.length >= 8 ? null : uploadButton}
             </Upload>
+
             <Modal
                 open={previewOpen}
                 title={previewTitle}
@@ -85,7 +90,7 @@ const MyUpload: React.FC<Props> = ({ setPhotos }) => {
                     src={previewImage}
                 />
             </Modal>
-        </>
+        </Flex>
     );
 };
 

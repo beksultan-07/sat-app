@@ -37,6 +37,7 @@ interface post {
     bedroomCount: number;
     bathroomCount: number;
     photos: string[];
+    sketch: string[];
 }
 
 interface geocodingResponse {
@@ -73,6 +74,7 @@ const CreatePostModule: React.FC = () => {
         bedroomCount: 0,
         bathroomCount: 0,
         photos: [],
+        sketch: [],
     });
     const [locationVariants, setLocationVariants] = useState<
         google.maps.LatLngLiteral[]
@@ -246,10 +248,20 @@ const CreatePostModule: React.FC = () => {
                     </Flex>
 
                     <MyUpload
+                        title="Загрузить фотки"
                         setPhotos={(arr) =>
                             setFormData({
                                 ...formData,
                                 photos: arr,
+                            })
+                        }
+                    />
+                    <MyUpload
+                        title="Загрузить чертеж"
+                        setPhotos={(arr) =>
+                            setFormData({
+                                ...formData,
+                                sketch: arr,
                             })
                         }
                     />
