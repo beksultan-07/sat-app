@@ -1,7 +1,7 @@
 import React from "react";
 import scss from "./style.module.scss";
 import { Button, Flex } from "antd";
-import { HeartOutlined, PhoneOutlined } from "@ant-design/icons";
+import { HeartFilled, HeartOutlined, PhoneOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
@@ -91,6 +91,7 @@ const Card: React.FC<Props> = ({
                     <Button className={scss.bottom__btn}>
                         <Flex align="center" gap={8}>
                             <HeartOutlined />
+                            {/* <HeartFilled /> */}
                             {t("lang32")}
                         </Flex>
                     </Button>

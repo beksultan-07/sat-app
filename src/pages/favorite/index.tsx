@@ -1,8 +1,7 @@
-import React, { useState } from "react";
-import Head from "./components/head";
-import Card from "../../components/card";
-import scss from "./style.module.scss";
+import React from "react";
+import Header from "../../components/header";
 import GrayBG from "../../components/gray_bg";
+import Card from "../../components/card";
 import { Typography } from "antd";
 
 const data = [
@@ -20,20 +19,15 @@ const data = [
         phone: "+996500000000",
     },
 ];
-
-const PostsModule: React.FC = () => {
-    const [searchData, setSearchData] = useState("");
-
+const Favorite: React.FC = () => {
     return (
         <>
-            <Head
-                inputData={searchData}
-                onChange={(value) => setSearchData(value)}
-                results={data.length}
-            />
+            <Header />
 
             <GrayBG>
-                <ul className={scss.list}>
+                <Typography.Title level={3}>My favorite posts</Typography.Title>
+
+                <ul style={{ listStyle: "none", padding: "35px 0 20px" }}>
                     {data.map((el, idx) => (
                         <Card {...el} key={idx} />
                     ))}
@@ -43,4 +37,4 @@ const PostsModule: React.FC = () => {
     );
 };
 
-export default PostsModule;
+export default Favorite;

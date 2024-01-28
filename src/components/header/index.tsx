@@ -40,6 +40,7 @@ const Header: React.FC = () => {
                     <Link to="/filter">Поиск</Link>
                     <Link to="/signin">Войти</Link>
                     <Link to="/posts">Посты</Link>
+                    <Link to="/favorite">Мои любимые</Link>
                     <Link to="/post/create">Добавить пост</Link>
                     <Link to="/profile">Настройки</Link>
                 </nav>

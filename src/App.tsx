@@ -7,6 +7,7 @@ import Posts from "./pages/posts";
 import CreatePost from "./pages/create_post";
 import Post from "./pages/post";
 import Profile from "./pages/profile";
+import Favorite from "./pages/favorite";
 
 const router = createBrowserRouter([
     {
@@ -36,6 +37,10 @@ const router = createBrowserRouter([
     {
         path: "/post/:id",
         element: <Post />,
+    },
+    {
+        path: "/favorite",
+        element: <Favorite />,
     },
     {
         path: "/post/create",
