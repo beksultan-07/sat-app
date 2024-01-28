@@ -1,0 +1,19 @@
+.wrap {
+    background: #fff;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+
+    .collapse {
+        width: 100%;
+    }
+
+    .green {
+        color: #00deb6;
+
+        svg {
+            width: 16px;
+            height: 16px;
+        }
+    }
+}
