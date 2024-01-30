@@ -4,6 +4,9 @@ import MyInput from "../../components/input";
 import MyButton from "../../components/button";
 import { Typography } from "antd";
 import { useTranslation } from "react-i18next";
+import { useDispatch } from "react-redux";
+import { setAuth } from "../../store/slices/auth";
+import { Link, useNavigate } from "react-router-dom";
 
 const { Title } = Typography;
 
@@ -17,11 +20,22 @@ const SignInModule: React.FC = () => {
 
     const { t } = useTranslation();
 
+    const dispatch = useDispatch();
+
+    const nav = useNavigate();
+
     const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const values = Object.values(formData);
         if (values.every((el) => el)) {
-            console.log(formData);
+            dispatch(
+                setAuth({
+                    auth: true,
+                    email: formData.email,
+                    fullName: "",
+                })
+            );
+            nav("/");
         } else {
             setErrorText("Заполните все поля");
         }
@@ -30,7 +44,6 @@ const SignInModule: React.FC = () => {
     return (
         <div className={scss.wrap}>
             <h2 className={scss.title}>Войти в аккаунт</h2>
-
             <form
                 action="#"
                 className={scss.form}
@@ -63,6 +76,11 @@ const SignInModule: React.FC = () => {
 
                 <MyButton>Продолжить</MyButton>
             </form>
+
+            <Typography.Text className={scss.link}>
+                Еще не зарегистрировались?
+                <Link to="/register"> Зарегистрироваться</Link>
+            </Typography.Text>
         </div>
     );
 };

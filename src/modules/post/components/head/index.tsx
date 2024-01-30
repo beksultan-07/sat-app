@@ -16,11 +16,11 @@ const normalizePrice = (price: string) => {
 };
 
 interface Props {
-    title: string;
-    price: string | number;
-    date: string | number;
-    mapLink: string;
-    paymentLink: string;
+    title?: string;
+    price?: string;
+    date?: string;
+    mapLink?: string;
+    paymentLink?: string;
 }
 
 const Head: React.FC<Props> = ({

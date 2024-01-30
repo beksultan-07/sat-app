@@ -1,10 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import GrayBG from "../../components/gray_bg";
 import Languages from "./components/languages";
 import { Button, Collapse, Flex, Typography } from "antd";
 import scss from "./style.module.scss";
 import { EditOutlined } from "@ant-design/icons";
 import getItems from "./components/collapse_items";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store";
+import { useNavigate } from "react-router-dom";
 
 const { Title, Text } = Typography;
 
@@ -14,6 +17,15 @@ const ProfileModule: React.FC = () => {
         lastName: "Jordan",
         email: "user@gmail.com",
     });
+
+    const auth = useSelector((state: RootState) => state.auth.auth);
+
+    const nav = useNavigate();
+
+    useEffect(() => {
+        if (!auth) nav("/signin");
+    }, [auth]);
+
     const [showCollapseItem, setShowCollapseItem] = useState([
         true,
         true,

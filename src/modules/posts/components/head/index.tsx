@@ -23,8 +23,14 @@ interface Props {
     inputData: string;
     onChange: (value: string) => void;
     results: number | string;
+    onClickBtn: () => void;
 }
-const Head: React.FC<Props> = ({ inputData, onChange, results }) => {
+const Head: React.FC<Props> = ({
+    inputData,
+    onChange,
+    results,
+    onClickBtn,
+}) => {
     const { t } = useTranslation();
     return (
         <div className={scss.wrap}>
@@ -35,7 +41,12 @@ const Head: React.FC<Props> = ({ inputData, onChange, results }) => {
                     size="large"
                     placeholder="Бишкек"
                 />
-                <Button type="text" size="large" className={scss.btn}>
+                <Button
+                    type="text"
+                    size="large"
+                    className={scss.btn}
+                    onClick={onClickBtn}
+                >
                     Фильтры
                 </Button>
             </Flex>

@@ -24,7 +24,9 @@ export const authSlice = createSlice({
             state.email = action.payload;
         },
         setAuth: (state, action: PayloadAction<AuthState>) => {
-            state = action.payload;
+            state.auth = action.payload.auth;
+            state.email = action.payload.email;
+            state.fullName = action.payload.fullName;
         },
     },
 });

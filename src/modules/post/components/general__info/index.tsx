@@ -4,7 +4,7 @@ import React from "react";
 const { Title, Text } = Typography;
 
 interface Props {
-    text: string;
+    text?: string;
 }
 
 const GeneralInfo: React.FC<Props> = ({ text }) => {

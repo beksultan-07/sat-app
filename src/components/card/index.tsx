@@ -1,9 +1,16 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import scss from "./style.module.scss";
 import { Button, Flex } from "antd";
 import { HeartFilled, HeartOutlined, PhoneOutlined } from "@ant-design/icons";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { Post } from "../../store/slices/posts";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../store";
+import {
+    addFavoritePost,
+    deleteFavoritePost,
+} from "../../store/slices/favoritePosts";
 
 const RenderImage = ({ images }: { images: string[] }) => {
     if (images.length > 2) {
@@ -26,31 +33,43 @@ const normalizePrice = (price: string) => {
         .join("");
 };
 
-interface Props {
-    images: string[];
-    price: string;
-    address: string;
-    rooms: number;
-    date: string;
-    phone: string;
-}
+const Card: React.FC<Post> = (props) => {
+    const [isSaved, setIsSaved] = useState(false);
 
-const Card: React.FC<Props> = ({
-    images,
-    price,
-    address,
-    rooms,
-    date,
-    phone,
-}) => {
+    const nav = useNavigate();
+
+    const favorite = useSelector((state: RootState) => state.favorite.posts);
+    const auth = useSelector((state: RootState) => state.auth.auth);
+
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        const currentPost = favorite.find((post) => post.id === props.id);
+        if (currentPost) setIsSaved(true);
+    }, []);
+
+    const onClickHeart = () => {
+        if (auth) {
+            if (isSaved) {
+                dispatch(deleteFavoritePost(props.id));
+                setIsSaved(false);
+            } else {
+                dispatch(addFavoritePost(props));
+                setIsSaved(true);
+            }
+        } else {
+            nav("/signin");
+        }
+    };
+
     const { t } = useTranslation();
     return (
         <li className={scss.item}>
             <div className={scss.big__image}>
-                <img src={images[0]} alt="" />
+                <img src={props.photos[0]} alt="" />
             </div>
             <Flex gap={5} className={scss.images}>
-                <RenderImage images={images} />
+                <RenderImage images={props.photos} />
             </Flex>
             <Flex className={scss.price__and__link} justify="space-between">
                 <Flex
@@ -60,27 +79,27 @@ const Card: React.FC<Props> = ({
                     className={scss.price}
                 >
                     <span className={scss.price__number}>
-                        {normalizePrice(price)}
+                        {normalizePrice(props.price)}
                     </span>
                     <span className={scss.price__text}>сом</span>
                 </Flex>
-                <Link to={"/post/1"} className={scss.btn}>
+                <Link to={"/post/" + props.id} className={scss.btn}>
                     {t("lang29")}
                 </Link>
             </Flex>
             <Flex gap={7} vertical align="flex-start" className={scss.info}>
-                <span className={scss.state}>{address}</span>
+                <span className={scss.state}>{props.address}</span>
                 <span className={scss.state}>
-                    {rooms} {t("lang20")}
+                    {props.roomCount} {t("lang20")}
                 </span>
 
                 <span className={scss.new}>новый</span>
 
                 <span className={scss.date}>
-                    {t("lang30")} {date}
+                    {t("lang30")} {props.date}
                 </span>
                 <Flex justify="space-between" className={scss.bottom}>
-                    <a href={"tel:" + phone}>
+                    <a href={"tel:" + props.phone}>
                         <Button className={scss.bottom__btn}>
                             <Flex align="center" gap={8}>
                                 <PhoneOutlined />
@@ -88,10 +107,9 @@ const Card: React.FC<Props> = ({
                             </Flex>
                         </Button>
                     </a>
-                    <Button className={scss.bottom__btn}>
+                    <Button className={scss.bottom__btn} onClick={onClickHeart}>
                         <Flex align="center" gap={8}>
-                            <HeartOutlined />
-                            {/* <HeartFilled /> */}
+                            {isSaved ? <HeartFilled /> : <HeartOutlined />}
                             {t("lang32")}
                         </Flex>
                     </Button>

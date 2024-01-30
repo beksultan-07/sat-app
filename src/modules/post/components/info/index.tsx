@@ -5,10 +5,10 @@ import { useTranslation } from "react-i18next";
 const { Text } = Typography;
 
 interface Props {
-    property: string;
-    ownership: string;
-    bathroomCount: number;
-    bedroomCount: number;
+    property?: string;
+    ownership?: string;
+    bathroomCount?: number;
+    bedroomCount?: number;
 }
 
 const Info: React.FC<Props> = ({

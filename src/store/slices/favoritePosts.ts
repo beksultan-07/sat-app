@@ -10,18 +10,19 @@ export const favoritePosts = createSlice({
     name: "My favorite Posts",
     initialState,
     reducers: {
-        addPost: (state, action: PayloadAction<Post>) => {
+        addFavoritePost: (state, action: PayloadAction<Post>) => {
             state.posts = [...state.posts, action.payload];
         },
-        deletePost: (state, action: PayloadAction<string>) => {
+        deleteFavoritePost: (state, action: PayloadAction<string>) => {
             state.posts = state.posts.filter((el) => el.id !== action.payload);
         },
-        setPosts: (state, action: PayloadAction<PostsState>) => {
+        setFavoritePosts: (state, action: PayloadAction<PostsState>) => {
             state.posts = action.payload.posts;
         },
     },
 });
 
-export const { addPost, deletePost, setPosts } = favoritePosts.actions;
+export const { addFavoritePost, deleteFavoritePost, setFavoritePosts } =
+    favoritePosts.actions;
 
 export default favoritePosts.reducer;

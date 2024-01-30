@@ -4,12 +4,12 @@ import React, { useEffect, useState } from "react";
 const { Title } = Typography;
 
 interface Props {
-    text: string;
+    text?: string;
 }
 
 const getNormalizedTextWithBr = (text: string) => {
     let word = "";
-    const arr: Array<string | React.ReactNode> = [];
+    const arr: Array<React.ReactNode> = [];
     for (let i = 0; i < text.length; i++) {
         word += text[i];
 
@@ -33,7 +33,9 @@ const Description: React.FC<Props> = ({ text }) => {
     const [words, setWords] = useState<Array<string | React.ReactNode>>([]);
 
     useEffect(() => {
-        setWords(getNormalizedTextWithBr(text));
+        if (text) {
+            setWords(getNormalizedTextWithBr(text));
+        }
     }, [text]);
 
     return (

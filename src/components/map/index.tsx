@@ -10,6 +10,7 @@ interface Props {
     ) => void;
     location: google.maps.LatLngLiteral | null;
     locationVariants: Array<google.maps.LatLngLiteral>;
+    zoom: number;
 }
 const getAddress = (location: google.maps.LatLngLiteral) => {
     return fetch(
@@ -28,6 +29,7 @@ const MyMap: React.FC<Props> = ({
     clickedPlace,
     location,
     locationVariants,
+    zoom,
 }) => {
     const [markerPosition, setMarkerPosition] = useState<{
         lat: number;
@@ -63,7 +65,7 @@ const MyMap: React.FC<Props> = ({
         <div style={{ height: "180px" }}>
             <APIProvider apiKey={import.meta.env.VITE_GOOGLE_API_KEY}>
                 <Map
-                    zoom={8}
+                    zoom={zoom}
                     center={{
                         lat: cameraLocation.lat,
                         lng: cameraLocation.lng,

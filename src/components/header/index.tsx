@@ -4,9 +4,12 @@ import { MenuOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Flex } from "antd";
 import logo from "../../assets/images/logo.png";
 import scss from "./style.module.scss";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store";
 
 const Header: React.FC = () => {
     const [showLinks, setShowLinks] = useState(false);
+    const auth = useSelector((state: RootState) => state.auth.auth);
     return (
         <>
             <header className={scss.header}>
@@ -20,7 +23,7 @@ const Header: React.FC = () => {
                     <Link to="/">
                         <img src={logo} alt="" />
                     </Link>
-                    <Link to="/profile">
+                    <Link to={auth ? "/profile" : "/signin"}>
                         <Button type="text">
                             <UserOutlined />
                         </Button>
@@ -38,7 +41,8 @@ const Header: React.FC = () => {
                 >
                     <Link to="/">Главная</Link>
                     <Link to="/filter">Поиск</Link>
-                    <Link to="/signin">Войти</Link>
+                    {!auth ? <Link to="/signin">Войти</Link> : null}
+
                     <Link to="/posts">Посты</Link>
                     <Link to="/favorite">Мои любимые</Link>
                     <Link to="/post/create">Добавить пост</Link>

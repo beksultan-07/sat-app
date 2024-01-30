@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Head from "./components/head";
 import MyDropDown from "../../components/dropdown";
 import MyInput from "../../components/input";
-import { Flex } from "antd";
+import { Flex, Typography } from "antd";
 import BottomButtons from "../../components/bottom_buttons";
 
 import scss from "./style.module.scss";
@@ -18,27 +18,11 @@ import {
 import MyUpload from "./components/upload";
 import MyButton from "../../components/button";
 import { useTranslation } from "react-i18next";
-
-interface post {
-    id: number;
-    region: string;
-    address: string;
-    location: {
-        lng: number;
-        lat: number;
-    } | null;
-    propertyType: string;
-    ownership: string;
-    description: string;
-    generalInfo: string;
-    area: number;
-    roomCount: number;
-    price: number;
-    bedroomCount: number;
-    bathroomCount: number;
-    photos: string[];
-    sketch: string[];
-}
+import { Post, addPost } from "../../store/slices/posts";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { RootState } from "../../store";
+import { addMyPost } from "../../store/slices/myPosts";
 
 interface geocodingResponse {
     results: {
@@ -59,22 +43,24 @@ const getLocationVariants = (address: string) => {
 };
 
 const CreatePostModule: React.FC = () => {
-    const [formData, setFormData] = useState<post>({
-        id: new Date().getTime(),
+    const [formData, setFormData] = useState<Post>({
+        id: new Date().getTime() + "",
         region: "",
         address: "",
-        location: null,
+        location: undefined,
         propertyType: "",
         ownership: "",
         description: "",
         generalInfo: "",
         area: 0,
         roomCount: 0,
-        price: 0,
+        price: "",
         bedroomCount: 0,
         bathroomCount: 0,
+        date: "",
+        phone: "",
         photos: [],
-        sketch: [],
+        sketchs: [],
     });
     const [locationVariants, setLocationVariants] = useState<
         google.maps.LatLngLiteral[]
@@ -85,24 +71,39 @@ const CreatePostModule: React.FC = () => {
         lng: 74.7661,
     });
 
+    const [errText, setErrText] = useState("");
+
     const { t } = useTranslation();
+
+    const dispatch = useDispatch();
+
+    const auth = useSelector((state: RootState) => state.auth.auth);
+
+    const nav = useNavigate();
+
+    // useEffect(() => {
+    //     if (!auth) nav("/signin");
+    // }, [auth]);
 
     const onClearHadnler = () => {
         setFormData({
             ...formData,
             region: "",
-            location: null,
             address: "",
+            location: undefined,
             propertyType: "",
             ownership: "",
             description: "",
             generalInfo: "",
             area: 0,
             roomCount: 0,
-            price: 0,
+            price: "",
             bedroomCount: 0,
             bathroomCount: 0,
+            date: "",
+            phone: "",
             photos: [],
+            sketchs: [],
         });
     };
 
@@ -132,147 +133,194 @@ const CreatePostModule: React.FC = () => {
         const res = await getLocationVariants("кыргызстан " + region);
 
         if (res.results.length > 0) {
+            setFormData({ ...formData, region });
             setCameraLocation(res.results[0].geometry.location);
+        }
+    };
+
+    const onSubmitHandler = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (Object.values(formData).every((el) => el || el.length > 0)) {
+            dispatch(addMyPost(formData));
+            dispatch(addPost(formData));
+            nav("/post/" + formData.id);
+        } else {
+            setErrText("Заполните все поля");
         }
     };
 
     return (
         <>
             <Head />
-            <div className={scss.content}>
-                <Flex vertical gap={32}>
-                    <MyDropDown
-                        handleChange={(value) => regionSearchHandler(value)}
-                        defaultName={t("lang22")}
-                        items={regions}
-                        title={t("lang33")}
-                    />
-                    <MyInput
-                        value={formData.address}
-                        title={t("lang34")}
-                        placeholder="Укажите адрес"
-                        onChangeHandler={(value) =>
-                            setFormData({ ...formData, address: value })
-                        }
-                    />
-                    <MyButton onClick={searchAddressHandler}>Search</MyButton>
-                    <MyMap
-                        locationVariants={locationVariants}
-                        cameraLocation={cameraLocation}
-                        location={formData.location}
-                        clickedPlace={clickMapHandler}
-                    />
-                    <MyDropDown
-                        handleChange={(value) =>
-                            setFormData({ ...formData, propertyType: value })
-                        }
-                        defaultName={t("lang19")}
-                        items={propertyTypes}
-                        title={t("lang35")}
-                    />
-                    <MyDropDown
-                        handleChange={(value) =>
-                            setFormData({ ...formData, ownership: value })
-                        }
-                        defaultName={t("lang36")}
-                        items={ownershipTypes}
-                        title="Право собственности"
-                    />
-                    <MyInput
-                        title={t("lang37")}
-                        placeholder="Опишите недвижимость"
-                        value={formData.description}
-                        onChangeHandler={(value) =>
-                            setFormData({ ...formData, description: value })
-                        }
-                    />
-                    <MyInput
-                        title={t("lang38")}
-                        placeholder="Добавьте общую информацию"
-                        value={formData.generalInfo}
-                        onChangeHandler={(value) =>
-                            setFormData({ ...formData, generalInfo: value })
-                        }
-                    />
-                    <MyInput
-                        title={t("lang16")}
-                        type="number"
-                        placeholder="Укажите квадратуру в метрах"
-                        value={String(formData.area)}
-                        onChangeHandler={(value) =>
-                            setFormData({ ...formData, area: +value })
-                        }
-                    />
-                    <Flex gap={16} justify="space-between">
+            <form onSubmit={onSubmitHandler}>
+                <div className={scss.content}>
+                    <Flex vertical gap={32}>
+                        {errText ? (
+                            <Typography.Title level={3} type="danger">
+                                {errText}
+                            </Typography.Title>
+                        ) : null}
                         <MyDropDown
-                            handleChange={(value) =>
-                                setFormData({ ...formData, roomCount: +value })
-                            }
-                            defaultName="-"
-                            items={roomCountOptions}
-                            title={t("lang39")}
+                            handleChange={(value) => regionSearchHandler(value)}
+                            defaultName={t("lang22")}
+                            items={regions}
+                            title={t("lang33")}
                         />
                         <MyInput
-                            value={String(formData.price)}
-                            type="number"
-                            title={t("lang28")}
-                            placeholder="-"
+                            value={formData.address}
+                            title={t("lang34")}
+                            placeholder="Укажите адрес"
                             onChangeHandler={(value) =>
-                                setFormData({ ...formData, price: +value })
+                                setFormData({ ...formData, address: value })
                             }
                         />
-                    </Flex>
-                    <Flex gap={16} justify="space-between">
+                        <MyButton onClick={searchAddressHandler}>
+                            Search
+                        </MyButton>
+                        <MyMap
+                            locationVariants={locationVariants}
+                            cameraLocation={cameraLocation}
+                            location={
+                                formData.location ? formData.location : null
+                            }
+                            clickedPlace={clickMapHandler}
+                            zoom={8}
+                        />
+                        <MyInput
+                            value={formData.phone}
+                            title="Введите номер телефона"
+                            placeholder="Номер телефона"
+                            type="number"
+                            onChangeHandler={(value) =>
+                                setFormData({ ...formData, phone: value })
+                            }
+                        />
+                        <MyInput
+                            value={formData.date}
+                            title="Укажите дату"
+                            type="date"
+                            placeholder=""
+                            onChangeHandler={(value) =>
+                                setFormData({ ...formData, date: value })
+                            }
+                        />
                         <MyDropDown
                             handleChange={(value) =>
                                 setFormData({
                                     ...formData,
-                                    bedroomCount: +value,
+                                    propertyType: value,
                                 })
                             }
-                            defaultName="-"
-                            items={bedroomCountOptions}
-                            title={t("lang39")}
+                            defaultName={t("lang19")}
+                            items={propertyTypes}
+                            title={t("lang35")}
                         />
                         <MyDropDown
                             handleChange={(value) =>
+                                setFormData({ ...formData, ownership: value })
+                            }
+                            defaultName={t("lang36")}
+                            items={ownershipTypes}
+                            title="Право собственности"
+                        />
+                        <MyInput
+                            title={t("lang37")}
+                            placeholder="Опишите недвижимость"
+                            value={formData.description}
+                            onChangeHandler={(value) =>
+                                setFormData({ ...formData, description: value })
+                            }
+                        />
+                        <MyInput
+                            title={t("lang38")}
+                            placeholder="Добавьте общую информацию"
+                            value={formData.generalInfo}
+                            onChangeHandler={(value) =>
+                                setFormData({ ...formData, generalInfo: value })
+                            }
+                        />
+                        <MyInput
+                            title={t("lang16")}
+                            type="number"
+                            placeholder="Укажите квадратуру в метрах"
+                            value={String(formData.area)}
+                            onChangeHandler={(value) =>
+                                setFormData({ ...formData, area: +value })
+                            }
+                        />
+                        <Flex gap={16} justify="space-between">
+                            <MyDropDown
+                                handleChange={(value) =>
+                                    setFormData({
+                                        ...formData,
+                                        roomCount: +value,
+                                    })
+                                }
+                                defaultName="-"
+                                items={roomCountOptions}
+                                title={t("lang39")}
+                            />
+                            <MyInput
+                                value={String(formData.price)}
+                                type="number"
+                                title={t("lang28")}
+                                placeholder="-"
+                                onChangeHandler={(value) =>
+                                    setFormData({ ...formData, price: value })
+                                }
+                            />
+                        </Flex>
+                        <Flex gap={16} justify="space-between">
+                            <MyDropDown
+                                handleChange={(value) =>
+                                    setFormData({
+                                        ...formData,
+                                        bedroomCount: +value,
+                                    })
+                                }
+                                defaultName="-"
+                                items={bedroomCountOptions}
+                                title={t("lang39")}
+                            />
+                            <MyDropDown
+                                handleChange={(value) =>
+                                    setFormData({
+                                        ...formData,
+                                        bathroomCount: +value,
+                                    })
+                                }
+                                defaultName="-"
+                                items={bathroomCountOptions}
+                                title={t("lang40")}
+                            />
+                        </Flex>
+                        <MyUpload
+                            title="Загрузить фотки"
+                            setPhotos={(arr) =>
                                 setFormData({
                                     ...formData,
-                                    bathroomCount: +value,
+                                    photos: arr,
                                 })
                             }
-                            defaultName="-"
-                            items={bathroomCountOptions}
-                            title={t("lang40")}
+                        />
+                        <MyUpload
+                            title="Загрузить чертеж"
+                            setPhotos={(arr) =>
+                                setFormData({
+                                    ...formData,
+                                    sketchs: arr,
+                                })
+                            }
                         />
                     </Flex>
-
-                    <MyUpload
-                        title="Загрузить фотки"
-                        setPhotos={(arr) =>
-                            setFormData({
-                                ...formData,
-                                photos: arr,
-                            })
-                        }
-                    />
-                    <MyUpload
-                        title="Загрузить чертеж"
-                        setPhotos={(arr) =>
-                            setFormData({
-                                ...formData,
-                                sketch: arr,
-                            })
-                        }
-                    />
-                </Flex>
-            </div>
-            <BottomButtons
-                confirmText={t("lang32")}
-                rejectText={t("lang24")}
-                confirm={() => console.log(formData)}
-                reject={() => onClearHadnler()}
-            />
+                </div>
+                <BottomButtons
+                    confirmText={t("lang32")}
+                    rejectText={t("lang24")}
+                    confirm={() => {}}
+                    reject={() => onClearHadnler()}
+                />
+            </form>
         </>
     );
 };

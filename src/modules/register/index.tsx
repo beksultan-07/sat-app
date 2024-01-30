@@ -5,6 +5,9 @@ import MyButton from "../../components/button";
 import sofa from "./assets/image.png";
 import { Typography } from "antd";
 import { useTranslation } from "react-i18next";
+import { Link, useNavigate } from "react-router-dom";
+import { setAuth } from "../../store/slices/auth";
+import { useDispatch } from "react-redux";
 
 const { Title } = Typography;
 const RegisterModule = () => {
@@ -14,15 +17,27 @@ const RegisterModule = () => {
 
     const [formData, setFormData] = useState({
         email: "",
+        name: "",
+        lastName: "",
         password: "",
         confirmPassword: "",
     });
+
+    const dispatch = useDispatch();
+    const nav = useNavigate();
 
     const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const values = Object.values(formData);
         if (values.every((el) => el)) {
-            console.log(formData);
+            dispatch(
+                setAuth({
+                    auth: true,
+                    email: formData.email,
+                    fullName: `${formData.name} ${formData.lastName}`,
+                })
+            );
+            nav("/");
         } else {
             setErrorText("Заполните все поля");
         }
@@ -53,6 +68,26 @@ const RegisterModule = () => {
                 />
 
                 <MyInput
+                    value={formData.email}
+                    placeholder=""
+                    title="Ваше имя"
+                    type="text"
+                    onChangeHandler={(value) =>
+                        setFormData({ ...formData, name: value })
+                    }
+                />
+
+                <MyInput
+                    value={formData.email}
+                    placeholder=""
+                    title="Ваше фамилия"
+                    type="text"
+                    onChangeHandler={(value) =>
+                        setFormData({ ...formData, lastName: value })
+                    }
+                />
+
+                <MyInput
                     value={formData.password}
                     placeholder=""
                     title={t("lang11")}
@@ -75,6 +110,10 @@ const RegisterModule = () => {
                 <MyButton>Продолжить</MyButton>
             </form>
 
+            <Typography.Text className={scss.link}>
+                Уже зарегистрировались?
+                <Link to="/signin"> Войти</Link>
+            </Typography.Text>
             <div className={scss.image__wrap}>
                 <img src={sofa} alt="" className={scss.image} />
             </div>
