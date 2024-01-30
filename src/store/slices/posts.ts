@@ -9,7 +9,7 @@ export interface Post {
         lat: number;
         lng: number;
     };
-    price: string;
+    price: number;
     roomCount: number;
     area: number;
     bathroomCount: number;

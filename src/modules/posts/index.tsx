@@ -7,6 +7,7 @@ import { Typography } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store";
 import { Post, setPosts } from "../../store/slices/posts";
+import { useNavigate } from "react-router-dom";
 
 const data: Post[] = [
     {
@@ -25,12 +26,12 @@ const data: Post[] = [
             "https://s3-alpha-sig.figma.com/img/ad3d/da8f/5813c53ff190bf4e734dda53512662a7?Expires=1707091200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=mUIEhbseAk-KncxEp5v7OgwAbGS7jaUwuiCThKP80uMv1mGVGK9xAnIN4kGvuH5pa3qTpTOkmj0g0yFLR-qEGwtDc10oiwAcoCsMaWPEI7D90L5HnK23zVp8-rSo9TLyg4UbSSrygKq54HwWd42PPWVi5wQNrmHcBVgIr~cfufHbstx-L9VhW~TNUVeVZcgowHPF4hid0M8Df8OV5yV~i~bjsSeAHACPupL2-6pLE3CkCzDnIyIWRCHeZ0sMOlf4r2woKoLyXJHMu6J~BMEPTzty4bNk-GrwylZpVseRxmDv39iKeqHi5OB6LiR0uOQd1CD8fVIzn70WH1Jh8nwo9Q__",
             "https://s3-alpha-sig.figma.com/img/ad3d/da8f/5813c53ff190bf4e734dda53512662a7?Expires=1707091200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=mUIEhbseAk-KncxEp5v7OgwAbGS7jaUwuiCThKP80uMv1mGVGK9xAnIN4kGvuH5pa3qTpTOkmj0g0yFLR-qEGwtDc10oiwAcoCsMaWPEI7D90L5HnK23zVp8-rSo9TLyg4UbSSrygKq54HwWd42PPWVi5wQNrmHcBVgIr~cfufHbstx-L9VhW~TNUVeVZcgowHPF4hid0M8Df8OV5yV~i~bjsSeAHACPupL2-6pLE3CkCzDnIyIWRCHeZ0sMOlf4r2woKoLyXJHMu6J~BMEPTzty4bNk-GrwylZpVseRxmDv39iKeqHi5OB6LiR0uOQd1CD8fVIzn70WH1Jh8nwo9Q__",
         ],
-        price: "4000000",
+        price: 40000001,
         address: "Бишкек, Парк Ататюрк, Масануева 58",
         region: "Чуй",
         area: 64,
         roomCount: 3,
-        date: "11.12.2023",
+        date: "12.12.2023",
         phone: "+996500000000",
         bathroomCount: 1,
         bedroomCount: 3,
@@ -64,12 +65,12 @@ const data: Post[] = [
             "https://s3-alpha-sig.figma.com/img/ad3d/da8f/5813c53ff190bf4e734dda53512662a7?Expires=1707091200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=mUIEhbseAk-KncxEp5v7OgwAbGS7jaUwuiCThKP80uMv1mGVGK9xAnIN4kGvuH5pa3qTpTOkmj0g0yFLR-qEGwtDc10oiwAcoCsMaWPEI7D90L5HnK23zVp8-rSo9TLyg4UbSSrygKq54HwWd42PPWVi5wQNrmHcBVgIr~cfufHbstx-L9VhW~TNUVeVZcgowHPF4hid0M8Df8OV5yV~i~bjsSeAHACPupL2-6pLE3CkCzDnIyIWRCHeZ0sMOlf4r2woKoLyXJHMu6J~BMEPTzty4bNk-GrwylZpVseRxmDv39iKeqHi5OB6LiR0uOQd1CD8fVIzn70WH1Jh8nwo9Q__",
             "https://s3-alpha-sig.figma.com/img/ad3d/da8f/5813c53ff190bf4e734dda53512662a7?Expires=1707091200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=mUIEhbseAk-KncxEp5v7OgwAbGS7jaUwuiCThKP80uMv1mGVGK9xAnIN4kGvuH5pa3qTpTOkmj0g0yFLR-qEGwtDc10oiwAcoCsMaWPEI7D90L5HnK23zVp8-rSo9TLyg4UbSSrygKq54HwWd42PPWVi5wQNrmHcBVgIr~cfufHbstx-L9VhW~TNUVeVZcgowHPF4hid0M8Df8OV5yV~i~bjsSeAHACPupL2-6pLE3CkCzDnIyIWRCHeZ0sMOlf4r2woKoLyXJHMu6J~BMEPTzty4bNk-GrwylZpVseRxmDv39iKeqHi5OB6LiR0uOQd1CD8fVIzn70WH1Jh8nwo9Q__",
         ],
-        price: "4000000",
+        price: 4000000,
         address: "Бишкек, Парк Ататюрк, Масануева 58",
         region: "Чуй",
         area: 64,
         roomCount: 3,
-        date: "11.12.2023",
+        date: "13.12.2023",
         phone: "+996500000000",
         bathroomCount: 1,
         bedroomCount: 3,
@@ -93,17 +94,23 @@ const PostsModule: React.FC = () => {
     const [searchData, setSearchData] = useState("");
     const [postsState, setPostsState] = useState<Post[]>([]);
 
+    const [sortBy, setSortBy] = useState("Новее");
+
     const allPosts = useSelector((state: RootState) => state.posts.posts);
 
     const dispatch = useDispatch();
+
+    const nav = useNavigate();
 
     useEffect(() => {
         dispatch(setPosts([...allPosts, ...data]));
         setPostsState([...allPosts, ...data]);
     }, []);
 
-    const onClickSearchHandler = () => {
-        const info = searchData.trim().toLowerCase();
+    const onClickSearchHandler = (value: string) => {
+        const info = value.trim().toLowerCase();
+        setSearchData(value);
+
         const foundPosts = allPosts.filter((post) =>
             post.address.toLowerCase().includes(info)
         );
@@ -115,13 +122,34 @@ const PostsModule: React.FC = () => {
         }
     };
 
+    const sortPosts = (sotrType: string) => {
+        console.log(sotrType);
+
+        if (sotrType === "Новее") {
+            const sorted = postsState.sort();
+            setPostsState(sorted);
+            console.log(sorted);
+        }
+        if (sotrType === "Дешевле") {
+            const sorted = postsState.sort((a, b) => a.price - b.price);
+            setPostsState(sorted);
+        }
+        if (sotrType === "Дороже") {
+            const sorted = postsState.sort((a, b) => b.price - a.price);
+            setPostsState(sorted);
+        }
+        setSortBy(sotrType);
+    };
+
     return (
         <>
             <Head
                 inputData={searchData}
-                onChange={(value) => setSearchData(value)}
+                onChange={(value) => onClickSearchHandler(value)}
                 results={postsState.length}
-                onClickBtn={onClickSearchHandler}
+                onClickBtn={() => nav("/filter")}
+                sortPosts={sortPosts}
+                sortedBy={sortBy}
             />
 
             <GrayBG>

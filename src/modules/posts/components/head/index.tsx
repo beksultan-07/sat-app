@@ -4,18 +4,27 @@ import { Button, Dropdown, Flex, Input } from "antd";
 import { CaretDownOutlined } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
 
-const items = [
+const getItems = (sortPosts: (sotrType: string) => void) => [
     {
         key: "1",
-        label: <a href="#">1st menu item</a>,
+        label: <React.Fragment>Новее</React.Fragment>,
+        onClick: () => {
+            sortPosts("Новее");
+        },
     },
     {
         key: "2",
-        label: <a href="#">2nd menu item</a>,
+        label: <React.Fragment>Дешевле</React.Fragment>,
+        onClick: () => {
+            sortPosts("Дешевле");
+        },
     },
     {
         key: "3",
-        label: <a href="#">3rd menu item</a>,
+        label: <React.Fragment>Дороже</React.Fragment>,
+        onClick: () => {
+            sortPosts("Дороже");
+        },
     },
 ];
 
@@ -24,12 +33,16 @@ interface Props {
     onChange: (value: string) => void;
     results: number | string;
     onClickBtn: () => void;
+    sortedBy: string;
+    sortPosts: (sotrType: string) => void;
 }
 const Head: React.FC<Props> = ({
     inputData,
     onChange,
     results,
     onClickBtn,
+    sortedBy,
+    sortPosts,
 }) => {
     const { t } = useTranslation();
     return (
@@ -54,9 +67,12 @@ const Head: React.FC<Props> = ({
                 <h4 className={scss.bottom__title}>
                     {results} {t("lang26")}
                 </h4>
-                <Dropdown menu={{ items }} placement="bottom">
+                <Dropdown
+                    menu={{ items: getItems(sortPosts) }}
+                    placement="bottom"
+                >
                     <Button type="text">
-                        {t("lang27")}
+                        {sortedBy}
                         <CaretDownOutlined />
                     </Button>
                 </Dropdown>

@@ -24,8 +24,9 @@ const RenderImage = ({ images }: { images: string[] }) => {
     }
 };
 
-const normalizePrice = (price: string) => {
+const normalizePrice = (price: number) => {
     return price
+        .toString()
         .split("")
         .reverse()
         .map((el, idx) => (idx !== 0 && idx % 3 === 0 ? el + "," : el))
