@@ -13,17 +13,24 @@ const { Title, Text } = Typography;
 
 const ProfileModule: React.FC = () => {
     const [data, setData] = useState({
-        firstName: "Michael",
-        lastName: "Jordan",
-        email: "user@gmail.com",
+        firstName: "",
+        lastName: "",
+        email: "",
     });
 
-    const auth = useSelector((state: RootState) => state.auth.auth);
+    const auth = useSelector((state: RootState) => state.auth);
 
     const nav = useNavigate();
 
     useEffect(() => {
-        if (!auth) nav("/signin");
+        if (!auth.auth) {
+            nav("/signin");
+            setData({
+                firstName: auth.lastName,
+                lastName: auth.lastName,
+                email: auth.email,
+            });
+        }
     }, [auth]);
 
     const [showCollapseItem, setShowCollapseItem] = useState([
@@ -40,6 +47,10 @@ const ProfileModule: React.FC = () => {
         console.log(data);
     };
 
+    const signOutHandler = () => {
+        console.log();
+    };
+
     return (
         <GrayBG>
             <Title level={3}>Настойки аккаунта</Title>
@@ -48,7 +59,7 @@ const ProfileModule: React.FC = () => {
                 <Flex justify="space-between" style={{ width: "100%" }}>
                     <Languages />
 
-                    <Button>Sign out</Button>
+                    <Button onClick={signOutHandler}>Sign out</Button>
                 </Flex>
 
                 <Collapse

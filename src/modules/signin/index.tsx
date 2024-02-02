@@ -7,6 +7,10 @@ import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { setAuth } from "../../store/slices/auth";
 import { Link, useNavigate } from "react-router-dom";
+import { AllData, signin } from "./api/api";
+import { setPosts } from "../../store/slices/posts";
+import { setMyPosts } from "../../store/slices/myPosts";
+import { setFavoritePosts } from "../../store/slices/favoritePosts";
 
 const { Title } = Typography;
 
@@ -28,14 +32,17 @@ const SignInModule: React.FC = () => {
         e.preventDefault();
         const values = Object.values(formData);
         if (values.every((el) => el)) {
-            dispatch(
-                setAuth({
-                    auth: true,
-                    email: formData.email,
-                    fullName: "",
+            signin(formData.email, formData.password)
+                .then((res: AllData) => {
+                    dispatch(setAuth(res.user));
+                    dispatch(setMyPosts(res.myPosts));
+                    dispatch(setFavoritePosts(res.favorites));
+
+                    nav("/");
                 })
-            );
-            nav("/");
+                .catch((err) => {
+                    setErrorText(JSON.stringify(err.code));
+                });
         } else {
             setErrorText("Заполните все поля");
         }

@@ -7,20 +7,13 @@ import BottomButtons from "../../components/bottom_buttons";
 
 import scss from "./style.module.scss";
 import MyMap from "../../components/map";
-import {
-    bathroomCountOptions,
-    bedroomCountOptions,
-    ownershipTypes,
-    propertyTypes,
-    regions,
-    roomCountOptions,
-} from "./data/data";
+import { ownershipTypes, propertyTypes, regions } from "./data/data";
 import MyUpload from "./components/upload";
 import MyButton from "../../components/button";
 import { useTranslation } from "react-i18next";
 import { Post, addPost } from "../../store/slices/posts";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { RootState } from "../../store";
 import { addMyPost } from "../../store/slices/myPosts";
 
@@ -45,20 +38,21 @@ const getLocationVariants = (address: string) => {
 const CreatePostModule: React.FC = () => {
     const [formData, setFormData] = useState<Post>({
         id: new Date().getTime() + "",
-        region: "",
+        region: "Любое",
         address: "",
         location: undefined,
-        propertyType: "",
-        ownership: "",
+        propertyType: "Любое",
+        ownership: "Любое",
         description: "",
         generalInfo: "",
         area: 0,
         roomCount: 0,
-        price: "",
+        price: 0,
+        author: "",
         bedroomCount: 0,
         bathroomCount: 0,
         date: "",
-        phone: "",
+        phone: 0,
         photos: [],
         sketchs: [],
     });
@@ -77,31 +71,48 @@ const CreatePostModule: React.FC = () => {
 
     const dispatch = useDispatch();
 
-    const auth = useSelector((state: RootState) => state.auth.auth);
+    const auth = useSelector((state: RootState) => state.auth);
+    const myPosts = useSelector((state: RootState) => state.myPosts.posts);
 
     const nav = useNavigate();
 
-    // useEffect(() => {
-    //     if (!auth) nav("/signin");
-    // }, [auth]);
+    const [searchParam] = useSearchParams();
+
+    useEffect(() => {
+        if (!auth.auth) nav("/signin");
+    }, [auth]);
+
+    useEffect(() => {
+        const editId = searchParam.get("edit_id");
+
+        if (editId) {
+            const find = myPosts.find((el) => el.id === editId);
+            if (find) {
+                setFormData(find);
+            }
+        } else {
+            onClearHadnler();
+        }
+    }, []);
 
     const onClearHadnler = () => {
         setFormData({
-            ...formData,
-            region: "",
+            id: new Date().getTime() + "",
+            region: "Любое",
             address: "",
             location: undefined,
-            propertyType: "",
-            ownership: "",
+            propertyType: "Любое",
+            ownership: "Любое",
             description: "",
             generalInfo: "",
             area: 0,
             roomCount: 0,
-            price: "",
+            price: 0,
+            author: auth.email,
             bedroomCount: 0,
             bathroomCount: 0,
             date: "",
-            phone: "",
+            phone: 0,
             photos: [],
             sketchs: [],
         });
@@ -150,7 +161,7 @@ const CreatePostModule: React.FC = () => {
     };
 
     return (
-        <>
+        <React.Fragment key={formData.id}>
             <Head />
             <form onSubmit={onSubmitHandler}>
                 <div className={scss.content}>
@@ -162,7 +173,7 @@ const CreatePostModule: React.FC = () => {
                         ) : null}
                         <MyDropDown
                             handleChange={(value) => regionSearchHandler(value)}
-                            defaultName={t("lang22")}
+                            defaultName={formData.region}
                             items={regions}
                             title={t("lang33")}
                         />
@@ -187,12 +198,12 @@ const CreatePostModule: React.FC = () => {
                             zoom={8}
                         />
                         <MyInput
-                            value={formData.phone}
+                            value={String(formData.phone)}
                             title="Введите номер телефона"
                             placeholder="Номер телефона"
                             type="number"
                             onChangeHandler={(value) =>
-                                setFormData({ ...formData, phone: value })
+                                setFormData({ ...formData, phone: +value })
                             }
                         />
                         <MyInput
@@ -211,7 +222,7 @@ const CreatePostModule: React.FC = () => {
                                     propertyType: value,
                                 })
                             }
-                            defaultName={t("lang19")}
+                            defaultName={formData.propertyType}
                             items={propertyTypes}
                             title={t("lang35")}
                         />
@@ -219,7 +230,7 @@ const CreatePostModule: React.FC = () => {
                             handleChange={(value) =>
                                 setFormData({ ...formData, ownership: value })
                             }
-                            defaultName={t("lang36")}
+                            defaultName={formData.ownership}
                             items={ownershipTypes}
                             title="Право собственности"
                         />
@@ -249,49 +260,52 @@ const CreatePostModule: React.FC = () => {
                             }
                         />
                         <Flex gap={16} justify="space-between">
-                            <MyDropDown
-                                handleChange={(value) =>
+                            <MyInput
+                                onChangeHandler={(value) =>
                                     setFormData({
                                         ...formData,
                                         roomCount: +value,
                                     })
                                 }
-                                defaultName="-"
-                                items={roomCountOptions}
-                                title={t("lang39")}
+                                placeholder="-"
+                                value={String(formData.roomCount)}
+                                type="number"
+                                title="Кол-во комнат"
                             />
                             <MyInput
                                 value={String(formData.price)}
                                 type="number"
-                                title={t("lang28")}
+                                title="Цена"
                                 placeholder="-"
                                 onChangeHandler={(value) =>
-                                    setFormData({ ...formData, price: value })
+                                    setFormData({ ...formData, price: +value })
                                 }
                             />
                         </Flex>
                         <Flex gap={16} justify="space-between">
-                            <MyDropDown
-                                handleChange={(value) =>
+                            <MyInput
+                                onChangeHandler={(value) =>
                                     setFormData({
                                         ...formData,
                                         bedroomCount: +value,
                                     })
                                 }
-                                defaultName="-"
-                                items={bedroomCountOptions}
-                                title={t("lang39")}
+                                placeholder="-"
+                                value={String(formData.bedroomCount)}
+                                type="number"
+                                title="Кол-во спален"
                             />
-                            <MyDropDown
-                                handleChange={(value) =>
+                            <MyInput
+                                onChangeHandler={(value) =>
                                     setFormData({
                                         ...formData,
                                         bathroomCount: +value,
                                     })
                                 }
-                                defaultName="-"
-                                items={bathroomCountOptions}
-                                title={t("lang40")}
+                                placeholder="-"
+                                value={String(formData.bathroomCount)}
+                                type="number"
+                                title="Кол-во ванных комнат"
                             />
                         </Flex>
                         <MyUpload
@@ -321,7 +335,7 @@ const CreatePostModule: React.FC = () => {
                     reject={() => onClearHadnler()}
                 />
             </form>
-        </>
+        </React.Fragment>
     );
 };
 

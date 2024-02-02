@@ -1,28 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-
-export interface Post {
-    id: string;
-    region: string;
-    address: string;
-    location?: {
-        lat: number;
-        lng: number;
-    };
-    price: number;
-    roomCount: number;
-    area: number;
-    bathroomCount: number;
-    bedroomCount: number;
-    ownership: string;
-    propertyType: string;
-    description: string;
-    generalInfo: string;
-    date: string;
-    phone: string;
-    photos: string[];
-    sketchs: string[];
-}
+import { Post } from "../../api/type";
 
 export interface PostsState {
     posts: Post[];

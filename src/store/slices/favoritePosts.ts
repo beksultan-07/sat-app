@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { Post, PostsState } from "./posts";
+import { PostsState } from "./posts";
+import { Post } from "../../api/type";
 
 const initialState: PostsState = {
     posts: [],
@@ -16,8 +17,8 @@ export const favoritePosts = createSlice({
         deleteFavoritePost: (state, action: PayloadAction<string>) => {
             state.posts = state.posts.filter((el) => el.id !== action.payload);
         },
-        setFavoritePosts: (state, action: PayloadAction<PostsState>) => {
-            state.posts = action.payload.posts;
+        setFavoritePosts: (state, action: PayloadAction<Post[]>) => {
+            state.posts = action.payload;
         },
     },
 });

@@ -17,7 +17,7 @@ const normalizePrice = (price: string) => {
 
 interface Props {
     title?: string;
-    price?: string;
+    price?: number;
     date?: string;
     mapLink?: string;
     paymentLink?: string;

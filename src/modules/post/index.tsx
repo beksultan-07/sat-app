@@ -7,14 +7,16 @@ import Description from "./components/description";
 import MyMap from "../../components/map";
 import scss from "./style.module.scss";
 import Sketch from "./components/sketch";
-import { useLocation, useNavigate, useNavigation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Post } from "../../store/slices/posts";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
-import { Modal, Typography } from "antd";
+import { Button, Modal, Typography } from "antd";
+import { EditFilled } from "@ant-design/icons";
 
 const PostModule: React.FC = () => {
     const [postData, setPostData] = useState<Post | null>(null);
+    const [myPost, setMyPost] = useState<boolean>(false);
 
     const [notFound, setNotFound] = useState(false);
 
@@ -23,10 +25,16 @@ const PostModule: React.FC = () => {
 
     const posts = useSelector((state: RootState) => state.posts.posts);
 
+    const email = useSelector((state: RootState) => state.auth.email);
+
     useEffect(() => {
         const locs = location.pathname.split("/");
         const postId = locs.at(-1);
         const currentPost = posts.find((post) => post.id === postId);
+        const ownPost = posts.find((post) => post.author === email);
+
+        if (ownPost) setMyPost(true);
+
         if (currentPost) {
             setPostData(currentPost);
         } else {
@@ -72,6 +80,18 @@ const PostModule: React.FC = () => {
                 location={postData?.location || null}
                 clickedPlace={() => console.log()}
             />
+
+            {myPost ? (
+                <Button
+                    type="primary"
+                    size="large"
+                    className={scss.editBtn}
+                    onClick={() => nav("/post/create?edit_id=" + postData?.id)}
+                >
+                    <EditFilled />
+                    Edit
+                </Button>
+            ) : null}
         </div>
     );
 };

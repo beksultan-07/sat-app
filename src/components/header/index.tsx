@@ -43,8 +43,9 @@ const Header: React.FC = () => {
                     <Link to="/filter">Поиск</Link>
                     {!auth ? <Link to="/signin">Войти</Link> : null}
 
-                    <Link to="/posts">Посты</Link>
+                    <Link to="/posts">Все посты</Link>
                     <Link to="/favorite">Мои любимые</Link>
+                    <Link to="/myposts">Мои посты</Link>
                     <Link to="/post/create">Добавить пост</Link>
                     <Link to="/profile">Настройки</Link>
                 </nav>

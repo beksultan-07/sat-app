@@ -8,6 +8,11 @@ import CreatePost from "./pages/create_post";
 import Post from "./pages/post";
 import Profile from "./pages/profile";
 import Favorite from "./pages/favorite";
+import MyPosts from "./pages/myPosts";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { setPosts } from "./store/slices/posts";
+import { getAllPosts } from "./api/api";
 
 const router = createBrowserRouter([
     {
@@ -43,12 +48,24 @@ const router = createBrowserRouter([
         element: <Favorite />,
     },
     {
+        path: "/myposts",
+        element: <MyPosts />,
+    },
+    {
         path: "/post/create",
         element: <CreatePost />,
     },
 ]);
 
 const App: React.FC = () => {
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        getAllPosts().then((res) => {
+            dispatch(setPosts(res));
+        });
+    }, []);
+
     return <RouterProvider router={router} />;
 };
 

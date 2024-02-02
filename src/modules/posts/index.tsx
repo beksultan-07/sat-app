@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store";
 import { Post, setPosts } from "../../store/slices/posts";
 import { useNavigate } from "react-router-dom";
+import { setMyPosts } from "../../store/slices/myPosts";
 
 const data: Post[] = [
     {
@@ -32,7 +33,7 @@ const data: Post[] = [
         area: 64,
         roomCount: 3,
         date: "12.12.2023",
-        phone: "+996500000000",
+        phone: 996500000000,
         bathroomCount: 1,
         bedroomCount: 3,
         ownership: "Квартира",
@@ -40,6 +41,7 @@ const data: Post[] = [
             lat: 41.2044,
             lng: 74.7661,
         },
+        author: "user@gmail.com",
         propertyType: "Право собственности",
         description: `
         8 кроватей \n
@@ -71,7 +73,7 @@ const data: Post[] = [
         area: 64,
         roomCount: 3,
         date: "13.12.2023",
-        phone: "+996500000000",
+        phone: 996500000000,
         bathroomCount: 1,
         bedroomCount: 3,
         ownership: "Квартира",
@@ -79,6 +81,7 @@ const data: Post[] = [
             lat: 41.2044,
             lng: 74.7661,
         },
+        author: "user@gmail.com",
         propertyType: "Право собственности",
         description: `
         8 кроватей \n
@@ -97,15 +100,23 @@ const PostsModule: React.FC = () => {
     const [sortBy, setSortBy] = useState("Новее");
 
     const allPosts = useSelector((state: RootState) => state.posts.posts);
+    const email = useSelector((state: RootState) => state.auth.email);
 
     const dispatch = useDispatch();
 
     const nav = useNavigate();
 
     useEffect(() => {
-        dispatch(setPosts([...allPosts, ...data]));
-        setPostsState([...allPosts, ...data]);
+        const posts = [...allPosts, ...data];
+        dispatch(setPosts(posts));
+
+        const found = posts.filter((el) => el.author === email);
+        dispatch(setMyPosts(found));
     }, []);
+
+    useEffect(() => {
+        setPostsState(allPosts);
+    }, [allPosts]);
 
     const onClickSearchHandler = (value: string) => {
         const info = value.trim().toLowerCase();

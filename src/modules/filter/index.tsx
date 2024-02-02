@@ -5,10 +5,10 @@ import scss from "./style.module.scss";
 import MyInput from "../../components/input";
 import { Checkbox, Flex } from "antd";
 import MyDropDown from "../../components/dropdown/index";
-import { propertyTypes } from "../../components/dropdown/data";
 import FromTo from "./components/FromTo";
 import BottomButtons from "../../components/bottom_buttons";
 import { useTranslation } from "react-i18next";
+import { propertyTypes } from "../create_post/data/data";
 
 const FilterModule: React.FC = () => {
     const [formData, setFormData] = useState({

@@ -8,8 +8,8 @@ import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router-dom";
 import { setAuth } from "../../store/slices/auth";
 import { useDispatch } from "react-redux";
+import { registerUser } from "./api/api";
 
-const { Title } = Typography;
 const RegisterModule = () => {
     const [errorText, setErrorText] = useState("");
 
@@ -29,15 +29,16 @@ const RegisterModule = () => {
     const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const values = Object.values(formData);
-        if (values.every((el) => el)) {
-            dispatch(
-                setAuth({
-                    auth: true,
-                    email: formData.email,
-                    fullName: `${formData.name} ${formData.lastName}`,
+        if (
+            values.every((el) => el) &&
+            formData.password === formData.confirmPassword
+        ) {
+            registerUser(formData)
+                .then((res) => {
+                    dispatch(setAuth(res));
+                    nav("/");
                 })
-            );
-            nav("/");
+                .catch((err) => setErrorText(err.code));
         } else {
             setErrorText("Заполните все поля");
         }
@@ -53,9 +54,9 @@ const RegisterModule = () => {
                 onSubmit={(e) => submitHandler(e)}
             >
                 {errorText ? (
-                    <Title level={5} type="danger">
+                    <Typography.Title level={5} type="danger">
                         {errorText}
-                    </Title>
+                    </Typography.Title>
                 ) : null}
                 <MyInput
                     value={formData.email}
@@ -68,7 +69,7 @@ const RegisterModule = () => {
                 />
 
                 <MyInput
-                    value={formData.email}
+                    value={formData.name}
                     placeholder=""
                     title="Ваше имя"
                     type="text"
@@ -78,7 +79,7 @@ const RegisterModule = () => {
                 />
 
                 <MyInput
-                    value={formData.email}
+                    value={formData.lastName}
                     placeholder=""
                     title="Ваше фамилия"
                     type="text"
