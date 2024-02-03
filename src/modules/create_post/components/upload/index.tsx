@@ -1,94 +1,94 @@
 import React, { useState } from "react";
-import { PlusOutlined } from "@ant-design/icons";
-import { Flex, Modal, Typography, Upload } from "antd";
-import type { RcFile, UploadProps } from "antd/es/upload";
-import type { UploadFile } from "antd/es/upload/interface";
-
-const getBase64 = (file: RcFile): Promise<string> =>
-    new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result as string);
-        reader.onerror = (error) => reject(error);
-    });
+import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
+import { Button, Flex, Modal, Typography, Upload } from "antd";
+import scss from "./style.module.scss";
+import { deleteImageFromStorage, uploadImageToStorage } from "../../api/api";
 
 const { Title } = Typography;
 
 interface Props {
-    photos?: string[];
+    photos: string[];
     setPhotos: (arr: Array<string>) => void;
     title: string;
+    postId: string;
 }
 
-const MyUpload: React.FC<Props> = ({ setPhotos, title }) => {
+const MyUpload: React.FC<Props> = ({ setPhotos, title, photos, postId }) => {
     const [previewOpen, setPreviewOpen] = useState(false);
     const [previewImage, setPreviewImage] = useState("");
-    const [previewTitle, setPreviewTitle] = useState("");
-    const [fileList, setFileList] = useState<UploadFile[]>([]);
 
-    const handleCancel = () => setPreviewOpen(false);
-
-    const handlePreview = async (file: UploadFile) => {
-        if (!file.url && !file.preview) {
-            file.preview = await getBase64(file.originFileObj as RcFile);
+    const uploadToDb = (file: File) => {
+        if (!file) {
+            console.error("Файл не выбран");
+            return;
         }
 
-        setPreviewImage(file.url || (file.preview as string));
+        uploadImageToStorage(file, postId).then((downloadURL) => {
+            if (typeof downloadURL === "string") {
+                setPhotos([...photos, downloadURL]);
+            }
+        });
+    };
+
+    const handlePreview = async (fileUrl: string) => {
+        setPreviewImage(fileUrl);
         setPreviewOpen(true);
-        setPreviewTitle(
-            file.name || file.url!.substring(file.url!.lastIndexOf("/") + 1)
-        );
     };
 
-    const handleChange: UploadProps["onChange"] = async ({
-        fileList: newFileList,
-    }) => {
-        setFileList(newFileList);
-
-        const newArr: string[] = await Promise.all(
-            newFileList.map(async (file) => {
-                if (!file.url && !file.preview) {
-                    file.preview = await getBase64(
-                        file.originFileObj as RcFile
-                    );
-                }
-                return file.url || (file.preview as string);
-            })
-        );
-
-        setPhotos(newArr);
+    const deleteImage = (fileUrl: string) => {
+        deleteImageFromStorage(fileUrl).then(() => {
+            const updatedPhotos = photos.filter((el) => el !== fileUrl);
+            setPhotos(updatedPhotos);
+            setPreviewOpen(false);
+        });
     };
-
-    const uploadButton = (
-        <button style={{ border: 0, background: "none" }} type="button">
-            <PlusOutlined />
-            <div style={{ marginTop: 8 }}>Upload</div>
-        </button>
-    );
-
     return (
         <Flex vertical gap={15}>
             <Title level={5}>{title}</Title>
-            <Upload
-                listType="picture-card"
-                fileList={fileList}
-                onPreview={handlePreview}
-                onChange={handleChange}
-            >
-                {fileList.length >= 8 ? null : uploadButton}
-            </Upload>
+            <Flex gap={10}>
+                {photos.map((el, idx) => (
+                    <img
+                        src={el}
+                        onClick={() => handlePreview(el)}
+                        key={idx}
+                        className={scss.image}
+                    />
+                ))}
+                <Upload beforeUpload={uploadToDb} fileList={[]}>
+                    <button
+                        style={{
+                            border: "1px solid #ccc",
+                            background: "none",
+                            padding: 20,
+                            borderRadius: 8,
+                        }}
+                        type="button"
+                    >
+                        <PlusOutlined />
+                        <div style={{ marginTop: 8 }}>Upload</div>
+                    </button>
+                </Upload>
+            </Flex>
 
             <Modal
                 open={previewOpen}
-                title={previewTitle}
                 footer={null}
-                onCancel={handleCancel}
+                onCancel={() => setPreviewOpen(false)}
             >
                 <img
                     alt="example"
                     style={{ width: "100%" }}
                     src={previewImage}
                 />
+
+                <Button
+                    icon={<DeleteOutlined />}
+                    type="primary"
+                    danger
+                    onClick={() => deleteImage(previewImage)}
+                >
+                    Delete
+                </Button>
             </Modal>
         </Flex>
     );

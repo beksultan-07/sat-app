@@ -11,10 +11,12 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import firebaseConfig from "./firebase/config.ts";
 import { getDatabase } from "firebase/database";
+import { getStorage } from "firebase/storage";
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const database = getDatabase(app);
+const storage = getStorage(app);
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
     <Provider store={store}>

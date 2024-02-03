@@ -300,6 +300,8 @@ const CreatePostModule: React.FC = () => {
                             />
                         </Flex>
                         <MyUpload
+                            postId={formData.id}
+                            photos={formData.photos}
                             title="Загрузить фотки"
                             setPhotos={(arr) =>
                                 setFormData({
@@ -309,6 +311,8 @@ const CreatePostModule: React.FC = () => {
                             }
                         />
                         <MyUpload
+                            postId={formData.id}
+                            photos={formData.sketchs}
                             title="Загрузить чертеж"
                             setPhotos={(arr) =>
                                 setFormData({
