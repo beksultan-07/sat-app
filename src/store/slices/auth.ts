@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
 export interface AuthState {
+    id: string;
     email: string;
     firstName: string;
     lastName: string;
@@ -9,6 +10,7 @@ export interface AuthState {
 }
 
 const initialState: AuthState = {
+    id: "",
     auth: false,
     firstName: "",
     lastName: "",
@@ -33,6 +35,7 @@ export const authSlice = createSlice({
             state.email = action.payload;
         },
         setAuth: (state, action: PayloadAction<AuthState>) => {
+            state.id = action.payload.id;
             state.auth = action.payload.auth;
             state.email = action.payload.email;
             state.firstName = action.payload.firstName;

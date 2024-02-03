@@ -15,11 +15,14 @@ export const registerUser = (data: RegisterData) => {
 
     return createUserWithEmailAndPassword(auth, data.email, data.password).then(
         () => {
+            const newUserId = uuidv4();
+
             const dataToStore = {
                 auth: true,
                 email: data.email,
                 firstName: data.name,
                 lastName: data.lastName,
+                id: newUserId,
             };
 
             const dataToDB: UserInfo = {
@@ -28,7 +31,6 @@ export const registerUser = (data: RegisterData) => {
                 subscription: false,
             };
 
-            const newUserId = uuidv4();
             set(ref(db, "users/" + newUserId), dataToDB);
             return dataToStore;
         }

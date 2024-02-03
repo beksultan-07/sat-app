@@ -4,40 +4,25 @@ import MyDropDown from "../../components/dropdown";
 import MyInput from "../../components/input";
 import { Flex, Typography } from "antd";
 import BottomButtons from "../../components/bottom_buttons";
-
 import scss from "./style.module.scss";
 import MyMap from "../../components/map";
 import { ownershipTypes, propertyTypes, regions } from "./data/data";
 import MyUpload from "./components/upload";
 import MyButton from "../../components/button";
 import { useTranslation } from "react-i18next";
-import { Post, addPost } from "../../store/slices/posts";
+import { addPost } from "../../store/slices/posts";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { RootState } from "../../store";
 import { addMyPost } from "../../store/slices/myPosts";
-
-interface geocodingResponse {
-    results: {
-        geometry: {
-            location: google.maps.LatLngLiteral;
-        };
-    }[];
-}
-
-const getLocationVariants = (address: string) => {
-    return fetch(
-        `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
-            address
-        )}&key=${import.meta.env.VITE_GOOGLE_API_KEY}`
-    )
-        .then((res) => res.json())
-        .then((res: geocodingResponse) => res);
-};
+import { Post } from "../../api/type";
+import { getLocationVariants } from "./api/googleMap";
+import { v4 as uuidv4 } from "uuid";
+import { addNewPost } from "./api/api";
 
 const CreatePostModule: React.FC = () => {
     const [formData, setFormData] = useState<Post>({
-        id: new Date().getTime() + "",
+        id: "",
         region: "Любое",
         address: "",
         location: undefined,
@@ -56,6 +41,7 @@ const CreatePostModule: React.FC = () => {
         photos: [],
         sketchs: [],
     });
+
     const [locationVariants, setLocationVariants] = useState<
         google.maps.LatLngLiteral[]
     >([]);
@@ -91,7 +77,8 @@ const CreatePostModule: React.FC = () => {
                 setFormData(find);
             }
         } else {
-            onClearHadnler();
+            const newUserId = uuidv4();
+            setFormData({ ...formData, id: newUserId, author: auth.email });
         }
     }, []);
 
@@ -127,6 +114,15 @@ const CreatePostModule: React.FC = () => {
         setFormData({ ...formData, location, address });
     };
 
+    const regionSearchHandler = async (region: string) => {
+        const res = await getLocationVariants("кыргызстан " + region);
+
+        if (res.results.length > 0) {
+            setFormData({ ...formData, region });
+            setCameraLocation(res.results[0].geometry.location);
+        }
+    };
+
     const searchAddressHandler = async () => {
         let address = formData.address.toLowerCase();
 
@@ -140,21 +136,16 @@ const CreatePostModule: React.FC = () => {
         setLocationVariants(locations);
     };
 
-    const regionSearchHandler = async (region: string) => {
-        const res = await getLocationVariants("кыргызстан " + region);
-
-        if (res.results.length > 0) {
-            setFormData({ ...formData, region });
-            setCameraLocation(res.results[0].geometry.location);
-        }
-    };
-
     const onSubmitHandler = (e: React.FormEvent) => {
         e.preventDefault();
-        if (Object.values(formData).every((el) => el || el.length > 0)) {
-            dispatch(addMyPost(formData));
-            dispatch(addPost(formData));
-            nav("/post/" + formData.id);
+        const values = Object.values(formData);
+
+        if (values.every((el) => el || el.lenght > 0)) {
+            addNewPost(auth.id, formData).then((res) => {
+                dispatch(addMyPost(res));
+                dispatch(addPost(res));
+                nav("/post/" + res.id);
+            });
         } else {
             setErrText("Заполните все поля");
         }

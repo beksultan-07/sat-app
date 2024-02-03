@@ -31,6 +31,7 @@ const SignInModule: React.FC = () => {
     const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const values = Object.values(formData);
+
         if (values.every((el) => el)) {
             signin(formData.email, formData.password)
                 .then((res: AllData) => {

@@ -15,6 +15,7 @@ const getBase64 = (file: RcFile): Promise<string> =>
 const { Title } = Typography;
 
 interface Props {
+    photos?: string[];
     setPhotos: (arr: Array<string>) => void;
     title: string;
 }
@@ -69,7 +70,6 @@ const MyUpload: React.FC<Props> = ({ setPhotos, title }) => {
         <Flex vertical gap={15}>
             <Title level={5}>{title}</Title>
             <Upload
-                action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
                 listType="picture-card"
                 fileList={fileList}
                 onPreview={handlePreview}

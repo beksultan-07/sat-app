@@ -6,11 +6,12 @@ export function getAllPosts() {
 
     return get(child(dbRef, `users/`)).then((snapshot) => {
         const dbData: Database = snapshot.val();
-
-        const postsArr: Post[] = Object.values(dbData).flatMap((user: User) =>
-            Object.values(user.posts || {})
-        );
-
-        return postsArr;
+        if (dbData) {
+            const postsArr: Post[] = Object.values(dbData).flatMap(
+                (user: User) => Object.values(user.posts || {})
+            );
+            return postsArr;
+        }
+        return [];
     });
 }
