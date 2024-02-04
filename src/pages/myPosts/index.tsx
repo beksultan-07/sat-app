@@ -23,9 +23,17 @@ const MyPosts: React.FC = () => {
             <Header />
 
             <GrayBG>
-                <Typography.Title level={3}>My favorite posts</Typography.Title>
+                <Typography.Title level={3}>My posts</Typography.Title>
                 {myPosts.length > 0 ? (
-                    <ul style={{ listStyle: "none", padding: "35px 0 20px" }}>
+                    <ul
+                        style={{
+                            listStyle: "none",
+                            padding: "35px 0 20px",
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: 10,
+                        }}
+                    >
                         {myPosts.map((el) => (
                             <Card {...el} key={el.id} />
                         ))}

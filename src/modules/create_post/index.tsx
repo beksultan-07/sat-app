@@ -19,6 +19,7 @@ import { Post } from "../../api/type";
 import { getLocationVariants } from "./api/googleMap";
 import { v4 as uuidv4 } from "uuid";
 import { addNewPost } from "./api/api";
+import { convertToTimeStamp, getDateFromTimeStamp } from "../../halpers/time";
 
 const CreatePostModule: React.FC = () => {
     const [formData, setFormData] = useState<Post>({
@@ -36,11 +37,13 @@ const CreatePostModule: React.FC = () => {
         author: "",
         bedroomCount: 0,
         bathroomCount: 0,
-        date: "",
+        date: new Date().getTime(),
         phone: 0,
         photos: [],
         sketchs: [],
     });
+
+    const [newPost, setNewPost] = useState(false);
 
     const [locationVariants, setLocationVariants] = useState<
         google.maps.LatLngLiteral[]
@@ -74,11 +77,13 @@ const CreatePostModule: React.FC = () => {
         if (editId) {
             const find = myPosts.find((el) => el.id === editId);
             if (find) {
+                setNewPost(false);
                 setFormData(find);
             }
         } else {
             const newUserId = uuidv4();
             setFormData({ ...formData, id: newUserId, author: auth.email });
+            setNewPost(true);
         }
     }, []);
 
@@ -98,7 +103,7 @@ const CreatePostModule: React.FC = () => {
             author: auth.email,
             bedroomCount: 0,
             bathroomCount: 0,
-            date: "",
+            date: new Date().getTime(),
             phone: 0,
             photos: [],
             sketchs: [],
@@ -198,12 +203,15 @@ const CreatePostModule: React.FC = () => {
                             }
                         />
                         <MyInput
-                            value={formData.date}
+                            value={getDateFromTimeStamp(formData.date)}
                             title="Укажите дату"
                             type="date"
                             placeholder=""
                             onChangeHandler={(value) =>
-                                setFormData({ ...formData, date: value })
+                                setFormData({
+                                    ...formData,
+                                    date: convertToTimeStamp(value),
+                                })
                             }
                         />
                         <MyDropDown
@@ -324,7 +332,7 @@ const CreatePostModule: React.FC = () => {
                     </Flex>
                 </div>
                 <BottomButtons
-                    confirmText={t("lang32")}
+                    confirmText={newPost ? "Create" : "Save"}
                     rejectText={t("lang24")}
                     confirm={() => {}}
                     reject={() => onClearHadnler()}

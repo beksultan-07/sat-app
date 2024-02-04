@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
-import { Button, Flex, Modal, Typography, Upload } from "antd";
+import { Button, Card, Flex, Modal, Progress, Typography, Upload } from "antd";
 import scss from "./style.module.scss";
 import { deleteImageFromStorage, uploadImageToStorage } from "../../api/api";
 
@@ -16,16 +16,28 @@ interface Props {
 const MyUpload: React.FC<Props> = ({ setPhotos, title, photos, postId }) => {
     const [previewOpen, setPreviewOpen] = useState(false);
     const [previewImage, setPreviewImage] = useState("");
+    const [progress, setProgress] = useState(0);
+    const [showProgress, setShowProgress] = useState(false);
+
+    const onProgress = (progress: number) => {
+        setProgress(progress);
+    };
 
     const uploadToDb = (file: File) => {
+        setShowProgress(true);
         if (!file) {
             console.error("Файл не выбран");
             return;
         }
 
-        uploadImageToStorage(file, postId).then((downloadURL) => {
+        uploadImageToStorage({
+            file,
+            postId,
+            onProgressCallback: onProgress,
+        }).then((downloadURL) => {
             if (typeof downloadURL === "string") {
                 setPhotos([...photos, downloadURL]);
+                setShowProgress(false);
             }
         });
     };
@@ -54,19 +66,21 @@ const MyUpload: React.FC<Props> = ({ setPhotos, title, photos, postId }) => {
                         className={scss.image}
                     />
                 ))}
+                {showProgress ? (
+                    <Card>
+                        <Progress percent={progress} type="circle" width={40} />
+                    </Card>
+                ) : null}
                 <Upload beforeUpload={uploadToDb} fileList={[]}>
-                    <button
+                    <Button
                         style={{
-                            border: "1px solid #ccc",
-                            background: "none",
-                            padding: 20,
+                            height: "100%",
                             borderRadius: 8,
                         }}
-                        type="button"
                     >
                         <PlusOutlined />
                         <div style={{ marginTop: 8 }}>Upload</div>
-                    </button>
+                    </Button>
                 </Upload>
             </Flex>
 

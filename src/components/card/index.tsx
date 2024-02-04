@@ -4,13 +4,14 @@ import { Button, Flex } from "antd";
 import { HeartFilled, HeartOutlined, PhoneOutlined } from "@ant-design/icons";
 import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Post } from "../../store/slices/posts";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store";
 import {
     addFavoritePost,
     deleteFavoritePost,
 } from "../../store/slices/favoritePosts";
+import { Post } from "../../api/type";
+import { addToFavoriteDB, deleteFromFavoriteDB } from "./api";
 
 const RenderImage = ({ images }: { images: string[] }) => {
     if (images.length > 2) {
@@ -40,7 +41,7 @@ const Card: React.FC<Post> = (props) => {
     const nav = useNavigate();
 
     const favorite = useSelector((state: RootState) => state.favorite.posts);
-    const auth = useSelector((state: RootState) => state.auth.auth);
+    const auth = useSelector((state: RootState) => state.auth);
 
     const dispatch = useDispatch();
 
@@ -50,13 +51,21 @@ const Card: React.FC<Post> = (props) => {
     }, []);
 
     const onClickHeart = () => {
-        if (auth) {
+        if (auth.auth) {
+            const favoritePostIds = favorite.map((el) => el.id);
+
             if (isSaved) {
-                dispatch(deleteFavoritePost(props.id));
-                setIsSaved(false);
+                deleteFromFavoriteDB(favoritePostIds, auth.id, props.id).then(
+                    (postId) => {
+                        dispatch(deleteFavoritePost(postId));
+                        setIsSaved(false);
+                    }
+                );
             } else {
-                dispatch(addFavoritePost(props));
-                setIsSaved(true);
+                addToFavoriteDB(favoritePostIds, auth.id, props.id).then(() => {
+                    dispatch(addFavoritePost(props));
+                    setIsSaved(true);
+                });
             }
         } else {
             nav("/signin");

@@ -6,6 +6,7 @@ import {
     uploadBytesResumable,
     ref as storageRef,
     deleteObject,
+    UploadTaskSnapshot,
 } from "firebase/storage";
 import { v4 as uuidv4 } from "uuid";
 
@@ -17,19 +18,49 @@ export function addNewPost(userId: string, post: Post) {
     });
 }
 
-export function uploadImageToStorage(file: File, postId: string) {
-    const storage = getStorage();
+interface UploadImageOptions {
+    file: File;
+    postId: string;
+    onProgressCallback?: (progress: number) => void;
+}
 
+export async function uploadImageToStorage({
+    file,
+    postId,
+    onProgressCallback,
+}: UploadImageOptions) {
+    const storage = getStorage();
     const metadata = {
         contentType: "image/jpeg",
     };
 
     const fileId = uuidv4();
     const fileRef = storageRef(storage, `posts/${postId}/${fileId}`);
+    const uploadTask = uploadBytesResumable(fileRef, file, metadata);
 
-    return uploadBytesResumable(fileRef, file, metadata).then((snapshot) => {
-        return getDownloadURL(snapshot.ref);
+    await new Promise<void>((resolve, reject) => {
+        uploadTask.on(
+            "state_changed",
+            (snapshot) => {
+                const progress =
+                    (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                console.log(progress);
+                if (onProgressCallback) {
+                    onProgressCallback(progress);
+                }
+            },
+            (error) => {
+                console.error("Error during upload:", error);
+                reject(error);
+            },
+            () => {
+                resolve();
+            }
+        );
     });
+
+    const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+    return downloadURL;
 }
 
 export function deleteImageFromStorage(fileUrl: string) {

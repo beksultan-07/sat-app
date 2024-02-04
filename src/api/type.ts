@@ -15,7 +15,7 @@ export interface Post {
     propertyType: string;
     description: string;
     generalInfo: string;
-    date: string;
+    date: number;
     phone: number;
     author: string;
     photos: string[];
