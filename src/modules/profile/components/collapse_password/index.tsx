@@ -3,7 +3,11 @@ import React, { useState } from "react";
 import MyInput from "../../../../components/input";
 import MyButton from "../../../../components/button";
 
-const PasswordCollapse: React.FC = () => {
+interface Props {
+    passwordSubmit: (oldPassword: string, newPassword: string) => void;
+}
+
+const PasswordCollapse: React.FC<Props> = ({ passwordSubmit }) => {
     const [password, setPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
@@ -16,6 +20,7 @@ const PasswordCollapse: React.FC = () => {
             setErrText("Different passwords");
         } else {
             console.log(newPassword);
+            passwordSubmit(password, confirmPassword);
         }
     };
     return (

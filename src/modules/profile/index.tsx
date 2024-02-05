@@ -5,9 +5,16 @@ import { Button, Collapse, Flex, Typography } from "antd";
 import scss from "./style.module.scss";
 import { EditOutlined } from "@ant-design/icons";
 import getItems from "./components/collapse_items";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store";
 import { useNavigate } from "react-router-dom";
+import {
+    changeNameFromDB,
+    signOutFromFB,
+    updateEmailFromDB,
+    updatePasswordFromDB,
+} from "./api";
+import { changeEmail, changeFullName, setAuth } from "../../store/slices/auth";
 
 const { Title, Text } = Typography;
 
@@ -18,20 +25,23 @@ const ProfileModule: React.FC = () => {
         email: "",
     });
 
-    const auth = useSelector((state: RootState) => state.auth);
+    const user = useSelector((state: RootState) => state.auth);
+
+    const dispatch = useDispatch();
 
     const nav = useNavigate();
 
     useEffect(() => {
-        if (!auth.auth) {
+        if (!user.auth) {
             nav("/signin");
+        } else {
             setData({
-                firstName: auth.lastName,
-                lastName: auth.lastName,
-                email: auth.email,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email,
             });
         }
-    }, [auth]);
+    }, [user]);
 
     const [showCollapseItem, setShowCollapseItem] = useState([
         true,
@@ -40,15 +50,44 @@ const ProfileModule: React.FC = () => {
     ]);
 
     const nameSubmitHandler = () => {
-        console.log(data);
+        changeNameFromDB(user.id, data.firstName, data.lastName).then((res) => {
+            dispatch(
+                changeFullName({ lastName: res.lastName, name: res.firstName })
+            );
+        });
     };
 
     const emailSubmitHandler = (passwordToConfirm: string) => {
-        console.log(data);
+        updateEmailFromDB(
+            user.email,
+            data.email,
+            passwordToConfirm,
+            user.id
+        ).then((res) => {
+            dispatch(changeEmail(res));
+        });
+    };
+
+    const passwordSubmitHandler = (
+        oldPassword: string,
+        newPassword: string
+    ) => {
+        updatePasswordFromDB(user.email, oldPassword, newPassword);
     };
 
     const signOutHandler = () => {
-        console.log();
+        signOutFromFB().then(() => {
+            dispatch(
+                setAuth({
+                    auth: false,
+                    email: "",
+                    firstName: "",
+                    id: "",
+                    lastName: "",
+                })
+            );
+            nav("/");
+        });
     };
 
     return (
@@ -79,6 +118,7 @@ const ProfileModule: React.FC = () => {
                         setShowCollapseItem,
                         nameSubmit: nameSubmitHandler,
                         emailSubmit: emailSubmitHandler,
+                        passwordSubmit: passwordSubmitHandler,
                     })}
                 />
             </Flex>

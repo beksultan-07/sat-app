@@ -17,6 +17,7 @@ interface getItemParams {
     setShowCollapseItem: React.Dispatch<React.SetStateAction<boolean[]>>;
     nameSubmit: () => void;
     emailSubmit: (passwordToConfirm: string) => void;
+    passwordSubmit: (oldPassword: string, newPassword: string) => void;
 }
 
 const getItems = ({
@@ -26,6 +27,7 @@ const getItems = ({
     showCollapseItem,
     nameSubmit,
     emailSubmit,
+    passwordSubmit,
 }: getItemParams) => {
     return [
         {
@@ -93,7 +95,7 @@ const getItems = ({
                     value="*****"
                 />
             ),
-            children: <PasswordCollapse />,
+            children: <PasswordCollapse passwordSubmit={passwordSubmit} />,
             className: scss.item,
             onClick: () => {
                 setShowCollapseItem([
