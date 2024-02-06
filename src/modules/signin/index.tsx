@@ -8,7 +8,6 @@ import { useDispatch } from "react-redux";
 import { setAuth } from "../../store/slices/auth";
 import { Link, useNavigate } from "react-router-dom";
 import { AllData, signin } from "./api/api";
-import { setPosts } from "../../store/slices/posts";
 import { setMyPosts } from "../../store/slices/myPosts";
 import { setFavoritePosts } from "../../store/slices/favoritePosts";
 

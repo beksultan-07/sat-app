@@ -1,5 +1,6 @@
 import {
     getAuth,
+    sendEmailVerification,
     signInWithEmailAndPassword,
     signOut,
     updateEmail,
@@ -24,41 +25,30 @@ export async function changeNameFromDB(
     };
 }
 
-export async function updateEmailFromDB(
-    email: string,
-    newEmail: string,
-    password: string,
-    userId: string
-) {
+export async function updateEmailFromDB(email: string, userId: string) {
     const auth = getAuth();
     const db = getDatabase();
 
     const user = auth.currentUser;
 
-    return signInWithEmailAndPassword(auth, email, password).then(async () => {
-        if (user) {
-            await set(ref(db, "users/" + userId + "/email"), newEmail);
-
-            await updateEmail(user, newEmail);
-        }
-        return newEmail;
-    });
+    if (user?.email !== email && user) {
+        return updateEmail(user, email).then(() => {
+            return set(ref(db, "users/" + userId + "/email"), email).then(
+                () => email
+            );
+        });
+    }
+    return new Error("Update Error");
 }
 
-export async function updatePasswordFromDB(
-    email: string,
-    password: string,
-    newPassword: string
-) {
+export async function updatePasswordFromDB(password: string) {
     const auth = getAuth();
     const user = auth.currentUser;
 
-    return signInWithEmailAndPassword(auth, email, password).then(async () => {
-        if (user) {
-            await updatePassword(user, newPassword);
-        }
-        return newPassword;
-    });
+    if (user) {
+        return updatePassword(user, password);
+    }
+    return new Error("Password is not available");
 }
 
 export function signOutFromFB() {

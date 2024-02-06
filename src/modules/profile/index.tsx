@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import GrayBG from "../../components/gray_bg";
 import Languages from "./components/languages";
-import { Button, Collapse, Flex, Typography } from "antd";
+import { Button, Collapse, Flex, Modal, Typography } from "antd";
 import scss from "./style.module.scss";
 import { EditOutlined } from "@ant-design/icons";
 import getItems from "./components/collapse_items";
@@ -15,6 +15,10 @@ import {
     updatePasswordFromDB,
 } from "./api";
 import { changeEmail, changeFullName, setAuth } from "../../store/slices/auth";
+import { getAllNeedDataFromDB } from "../signin/api/api";
+import { setMyPosts } from "../../store/slices/myPosts";
+import { setFavoritePosts } from "../../store/slices/favoritePosts";
+import { setPosts } from "../../store/slices/posts";
 
 const { Title, Text } = Typography;
 
@@ -24,6 +28,14 @@ const ProfileModule: React.FC = () => {
         lastName: "",
         email: "",
     });
+
+    const [activeCollapse, setActiveCollapse] = useState(0);
+
+    const [errorText, setErrorText] = useState("");
+
+    const [showCollapseItem, setShowCollapseItem] = useState<
+        [boolean, boolean, boolean]
+    >([true, true, true]);
 
     const user = useSelector((state: RootState) => state.auth);
 
@@ -43,36 +55,49 @@ const ProfileModule: React.FC = () => {
         }
     }, [user]);
 
-    const [showCollapseItem, setShowCollapseItem] = useState([
-        true,
-        true,
-        true,
-    ]);
-
     const nameSubmitHandler = () => {
-        changeNameFromDB(user.id, data.firstName, data.lastName).then((res) => {
-            dispatch(
-                changeFullName({ lastName: res.lastName, name: res.firstName })
-            );
-        });
+        changeNameFromDB(user.id, data.firstName, data.lastName)
+            .then((res) => {
+                dispatch(
+                    changeFullName({
+                        lastName: res.lastName,
+                        name: res.firstName,
+                    })
+                );
+                setActiveCollapse(0);
+                setShowCollapseItem([true, true, true]);
+            })
+            .catch((err) => setErrorText(err.code));
     };
 
-    const emailSubmitHandler = (passwordToConfirm: string) => {
-        updateEmailFromDB(
-            user.email,
-            data.email,
-            passwordToConfirm,
-            user.id
-        ).then((res) => {
-            dispatch(changeEmail(res));
-        });
+    const emailSubmitHandler = async () => {
+        updateEmailFromDB(data.email, user.id)
+            .then(async (res) => {
+                if (typeof res === "string") {
+                    const newData = await getAllNeedDataFromDB(res);
+                    dispatch(setMyPosts(newData.myPosts));
+                    dispatch(setFavoritePosts(newData.favorites));
+                    dispatch(setPosts(newData.allPosts));
+
+                    dispatch(changeEmail(res));
+                    setActiveCollapse(0);
+                    setShowCollapseItem([true, true, true]);
+                }
+            })
+            .catch((err) => {
+                setErrorText(err.code);
+            });
     };
 
-    const passwordSubmitHandler = (
-        oldPassword: string,
-        newPassword: string
-    ) => {
-        updatePasswordFromDB(user.email, oldPassword, newPassword);
+    const passwordSubmitHandler = (password: string) => {
+        updatePasswordFromDB(password)
+            .then(() => {
+                setActiveCollapse(0);
+                setShowCollapseItem([true, true, true]);
+            })
+            .catch((err) => {
+                setErrorText(err.code);
+            });
     };
 
     const signOutHandler = () => {
@@ -86,12 +111,23 @@ const ProfileModule: React.FC = () => {
                     lastName: "",
                 })
             );
+            setActiveCollapse(0);
+            setShowCollapseItem([true, true, true]);
+
             nav("/");
         });
     };
 
     return (
         <GrayBG>
+            <Modal
+                title="Error"
+                open={!!errorText}
+                onOk={() => setErrorText("")}
+                cancelButtonProps={{ style: { visibility: "hidden" } }}
+            >
+                {errorText}
+            </Modal>
             <Title level={3}>Настойки аккаунта</Title>
 
             <Flex gap={16} vertical className={scss.wrap} align="flex-start">
@@ -102,6 +138,7 @@ const ProfileModule: React.FC = () => {
                 </Flex>
 
                 <Collapse
+                    activeKey={activeCollapse}
                     expandIconPosition="end"
                     bordered={false}
                     expandIcon={() => (
@@ -119,6 +156,8 @@ const ProfileModule: React.FC = () => {
                         nameSubmit: nameSubmitHandler,
                         emailSubmit: emailSubmitHandler,
                         passwordSubmit: passwordSubmitHandler,
+                        activeCollapse,
+                        setActiveCollapse,
                     })}
                 />
             </Flex>

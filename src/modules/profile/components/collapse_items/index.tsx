@@ -13,11 +13,15 @@ interface DataType {
 interface getItemParams {
     data: DataType;
     setData: React.Dispatch<React.SetStateAction<DataType>>;
-    showCollapseItem: boolean[];
-    setShowCollapseItem: React.Dispatch<React.SetStateAction<boolean[]>>;
+    showCollapseItem: [boolean, boolean, boolean];
+    setShowCollapseItem: React.Dispatch<
+        React.SetStateAction<[boolean, boolean, boolean]>
+    >;
     nameSubmit: () => void;
-    emailSubmit: (passwordToConfirm: string) => void;
-    passwordSubmit: (oldPassword: string, newPassword: string) => void;
+    emailSubmit: () => void;
+    passwordSubmit: (password: string) => void;
+    setActiveCollapse: (number: number) => void;
+    activeCollapse: number;
 }
 
 const getItems = ({
@@ -28,6 +32,8 @@ const getItems = ({
     nameSubmit,
     emailSubmit,
     passwordSubmit,
+    setActiveCollapse,
+    activeCollapse,
 }: getItemParams) => {
     return [
         {
@@ -40,6 +46,9 @@ const getItems = ({
                 />
             ),
             onClick: () => {
+                if (activeCollapse === 1) setActiveCollapse(0);
+                else setActiveCollapse(1);
+
                 setShowCollapseItem([
                     !showCollapseItem[0],
                     showCollapseItem[1],
@@ -71,6 +80,9 @@ const getItems = ({
                 />
             ),
             onClick: () => {
+                if (activeCollapse === 2) setActiveCollapse(0);
+                else setActiveCollapse(2);
+
                 setShowCollapseItem([
                     showCollapseItem[0],
                     !showCollapseItem[1],
@@ -95,9 +107,13 @@ const getItems = ({
                     value="*****"
                 />
             ),
+            isActive: true,
             children: <PasswordCollapse passwordSubmit={passwordSubmit} />,
             className: scss.item,
             onClick: () => {
+                if (activeCollapse === 3) setActiveCollapse(0);
+                else setActiveCollapse(3);
+
                 setShowCollapseItem([
                     showCollapseItem[0],
                     showCollapseItem[1],

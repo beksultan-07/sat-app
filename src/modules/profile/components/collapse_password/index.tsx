@@ -1,26 +1,30 @@
 import { Flex, Typography } from "antd";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import MyInput from "../../../../components/input";
 import MyButton from "../../../../components/button";
 
 interface Props {
-    passwordSubmit: (oldPassword: string, newPassword: string) => void;
+    passwordSubmit: (password: string) => void;
 }
 
 const PasswordCollapse: React.FC<Props> = ({ passwordSubmit }) => {
     const [password, setPassword] = useState("");
-    const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
 
     const [errText, setErrText] = useState("");
 
+    useEffect(() => {
+        return () => {
+            setErrText("");
+        };
+    }, []);
+
     const onSubmitHandler = (e: React.FormEvent) => {
         e.preventDefault();
-        if (newPassword !== confirmPassword) {
+        if (password !== confirmPassword) {
             setErrText("Different passwords");
         } else {
-            console.log(newPassword);
-            passwordSubmit(password, confirmPassword);
+            passwordSubmit(password);
         }
     };
     return (
@@ -34,14 +38,8 @@ const PasswordCollapse: React.FC<Props> = ({ passwordSubmit }) => {
                 <MyInput
                     onChangeHandler={(value) => setPassword(value)}
                     placeholder="*******"
-                    title="password"
-                    value={password}
-                />
-                <MyInput
-                    onChangeHandler={(value) => setNewPassword(value)}
-                    placeholder="*******"
                     title="New password"
-                    value={newPassword}
+                    value={password}
                     type="password"
                 />
                 <MyInput

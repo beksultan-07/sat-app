@@ -1,20 +1,19 @@
 import { Flex } from "antd";
-import React, { useState } from "react";
+import React from "react";
 import MyInput from "../../../../components/input";
 import MyButton from "../../../../components/button";
 
 interface Props {
     email: string;
     changeEmail: (value: string) => void;
-    onSubmit: (passwordToConfirm: string) => void;
+    onSubmit: () => void;
 }
 
 const EmailCollapse: React.FC<Props> = ({ email, changeEmail, onSubmit }) => {
     const onSubmitHandler = (e: React.FormEvent) => {
         e.preventDefault();
-        onSubmit(password);
+        onSubmit();
     };
-    const [password, setPassword] = useState("");
 
     return (
         <form onSubmit={onSubmitHandler}>
@@ -22,15 +21,8 @@ const EmailCollapse: React.FC<Props> = ({ email, changeEmail, onSubmit }) => {
                 <MyInput
                     onChangeHandler={(value) => changeEmail(value)}
                     placeholder=""
-                    title="First name"
+                    title=""
                     value={email}
-                />
-                <MyInput
-                    onChangeHandler={(value) => setPassword(value)}
-                    placeholder="*******"
-                    title="password"
-                    value={password}
-                    type="password"
                 />
                 <MyButton>Save</MyButton>
             </Flex>
