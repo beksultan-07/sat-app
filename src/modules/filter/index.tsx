@@ -3,7 +3,7 @@ import Head from "./components/head";
 
 import scss from "./style.module.scss";
 import MyInput from "../../components/input";
-import { Checkbox, Flex } from "antd";
+import { Flex } from "antd";
 import MyDropDown from "../../components/dropdown/index";
 import FromTo from "./components/FromTo";
 import BottomButtons from "../../components/bottom_buttons";

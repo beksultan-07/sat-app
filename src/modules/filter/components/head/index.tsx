@@ -1,6 +1,5 @@
 import React from "react";
 import scss from "./style.module.scss";
-import { Input } from "antd";
 import { useTranslation } from "react-i18next";
 import MyDropDown from "../../../../components/dropdown";
 import { regions } from "../../../../data/data";

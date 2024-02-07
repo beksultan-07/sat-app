@@ -1,5 +1,5 @@
 import { Flex, Select, Typography } from "antd";
-import React, { useEffect } from "react";
+import React from "react";
 import scss from "./style.module.scss";
 
 const { Text } = Typography;

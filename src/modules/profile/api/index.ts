@@ -1,11 +1,4 @@
-import {
-    getAuth,
-    sendEmailVerification,
-    signInWithEmailAndPassword,
-    signOut,
-    updateEmail,
-    updatePassword,
-} from "firebase/auth";
+import { getAuth, signOut, updateEmail, updatePassword } from "firebase/auth";
 import { getDatabase, ref, set } from "firebase/database";
 
 export async function changeNameFromDB(

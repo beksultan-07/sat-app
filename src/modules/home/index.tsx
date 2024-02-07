@@ -5,7 +5,7 @@ import NoViews from "./components/noViews";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 
-const HomeModule = () => {
+const HomeModule: React.FC = () => {
     const auth = useSelector((state: RootState) => state.auth.auth);
     return (
         <>

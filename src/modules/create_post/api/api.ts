@@ -6,7 +6,6 @@ import {
     uploadBytesResumable,
     ref as storageRef,
     deleteObject,
-    UploadTaskSnapshot,
 } from "firebase/storage";
 import { v4 as uuidv4 } from "uuid";
 

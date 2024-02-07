@@ -1,7 +1,7 @@
 import React from "react";
 import scss from "./style.module.scss";
 
-const Head = () => {
+const Head: React.FC = () => {
     return (
         <div className={scss.head}>
             <h1 className={scss.title}>

@@ -14,9 +14,9 @@ import { getDatabase } from "firebase/database";
 import { getStorage } from "firebase/storage";
 
 const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const database = getDatabase(app);
-const storage = getStorage(app);
+getAuth(app);
+getDatabase(app);
+getStorage(app);
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
     <Provider store={store}>
