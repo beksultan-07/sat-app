@@ -9,3 +9,9 @@ export const getDateFromTimeStamp = (time: number) => {
     const day = String(dateObject.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
 };
+
+export const getTruncateTime = (timestamp: number) => {
+    const date = new Date(timestamp);
+    date.setHours(0, 0, 0, 0);
+    return date.getTime();
+};

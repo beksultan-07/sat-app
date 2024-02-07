@@ -18,6 +18,7 @@ import { deletePostFromDB } from "./api/index";
 import { deleteMyPost } from "../../store/slices/myPosts";
 import { deleteFavoritePost } from "../../store/slices/favoritePosts";
 import { deletePost } from "../../store/slices/posts";
+import noImage from "../../assets/images/noImage.jpeg";
 
 const PostModule: React.FC = () => {
     const [postData, setPostData] = useState<Post | null>(null);
@@ -80,8 +81,11 @@ const PostModule: React.FC = () => {
                     Sorry but your post didnt found
                 </Typography.Text>
             </Modal>
-            <ImagesSlider images={postData?.photos || []} />
-
+            {postData?.photos && postData.photos.length > 0 ? (
+                <ImagesSlider images={postData.photos} />
+            ) : (
+                <img src={noImage} alt="" className={scss.image} />
+            )}
             <Head
                 mapLink="#"
                 paymentLink="#"
@@ -91,13 +95,13 @@ const PostModule: React.FC = () => {
                 price={postData?.price}
                 title={postData?.address}
             />
-
             <Info
                 bathroomCount={postData?.bathroomCount}
                 bedroomCount={postData?.bedroomCount}
                 ownership={postData?.ownership}
                 property={postData?.propertyType}
             />
+
             <Sketch images={postData?.sketchs || []} />
             <Description text={postData?.description} />
             <GeneralInfo text={postData?.generalInfo} />
@@ -108,7 +112,6 @@ const PostModule: React.FC = () => {
                 location={postData?.location || null}
                 clickedPlace={() => console.log()}
             />
-
             {myPost ? (
                 <Flex gap={10} align="center" style={{ margin: "40px 0 0" }}>
                     <Button

@@ -12,9 +12,11 @@ import {
 } from "../../store/slices/favoritePosts";
 import { Post } from "../../api/type";
 import { addToFavoriteDB, deleteFromFavoriteDB } from "./api";
+import { getDateFromTimeStamp } from "../../halpers/time";
+import noImage from "../../assets/images/noImage.jpeg";
 
-const RenderImage = ({ images }: { images: string[] }) => {
-    if (images.length > 2) {
+const RenderImage = ({ images }: { images: string[] | undefined }) => {
+    if (images && images.length > 2) {
         const threeImages = images.slice(1, 4);
 
         return threeImages.map((link, idx) => (
@@ -76,7 +78,11 @@ const Card: React.FC<Post> = (props) => {
     return (
         <li className={scss.item}>
             <div className={scss.big__image}>
-                <img src={props.photos[0]} alt="" />
+                {props.photos ? (
+                    <img src={props.photos[0]} alt="" />
+                ) : (
+                    <img src={noImage} alt="" />
+                )}
             </div>
             <Flex gap={5} className={scss.images}>
                 <RenderImage images={props.photos} />
@@ -106,7 +112,8 @@ const Card: React.FC<Post> = (props) => {
                 <span className={scss.new}>новый</span>
 
                 <span className={scss.date}>
-                    {t("lang30")} {props.date}
+                    {t("lang30")}{" "}
+                    {props.date ? getDateFromTimeStamp(props.date) : "-"}
                 </span>
                 <Flex justify="space-between" className={scss.bottom}>
                     <a href={"tel:" + props.phone}>

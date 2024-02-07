@@ -6,7 +6,7 @@ import { Flex, Typography } from "antd";
 import BottomButtons from "../../components/bottom_buttons";
 import scss from "./style.module.scss";
 import MyMap from "../../components/map";
-import { ownershipTypes, propertyTypes, regions } from "./data/data";
+import { ownershipTypes, propertyTypes, regions } from "../../data/data";
 import MyUpload from "./components/upload";
 import MyButton from "../../components/button";
 import { useTranslation } from "react-i18next";

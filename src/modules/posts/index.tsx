@@ -4,10 +4,11 @@ import Card from "../../components/card";
 import scss from "./style.module.scss";
 import GrayBG from "../../components/gray_bg";
 import { Typography } from "antd";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store";
 import { useNavigate } from "react-router-dom";
 import { Post } from "../../api/type";
+import { setFilteredPosts } from "../../store/slices/filteredPosts";
 
 const PostsModule: React.FC = () => {
     const [searchData, setSearchData] = useState("");
@@ -16,11 +17,23 @@ const PostsModule: React.FC = () => {
     const [sortBy, setSortBy] = useState("Новее");
 
     const allPosts = useSelector((state: RootState) => state.posts.posts);
+    const filteredPosts = useSelector(
+        (state: RootState) => state.filteredPosts.posts
+    );
+
+    const dispatch = useDispatch();
 
     const nav = useNavigate();
 
     useEffect(() => {
-        setPostsState(allPosts);
+        if (filteredPosts.length > 0) {
+            setPostsState(filteredPosts);
+        } else {
+            setPostsState(allPosts);
+        }
+        return () => {
+            dispatch(setFilteredPosts([]));
+        };
     }, [allPosts]);
 
     const onClickSearchHandler = (value: string) => {
@@ -39,22 +52,20 @@ const PostsModule: React.FC = () => {
     };
 
     const sortPosts = (sotrType: string) => {
-        console.log(sotrType);
+        setSortBy(sotrType);
 
         if (sotrType === "Новее") {
-            const sorted = postsState.sort();
+            const sorted = [...postsState].sort((a, b) => a.date - b.date);
             setPostsState(sorted);
-            console.log(sorted);
         }
         if (sotrType === "Дешевле") {
-            const sorted = postsState.sort((a, b) => a.price - b.price);
+            const sorted = [...postsState].sort((a, b) => a.price - b.price);
             setPostsState(sorted);
         }
         if (sotrType === "Дороже") {
-            const sorted = postsState.sort((a, b) => b.price - a.price);
+            const sorted = [...postsState].sort((a, b) => b.price - a.price);
             setPostsState(sorted);
         }
-        setSortBy(sotrType);
     };
 
     return (

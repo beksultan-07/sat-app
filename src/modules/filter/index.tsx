@@ -8,45 +8,134 @@ import MyDropDown from "../../components/dropdown/index";
 import FromTo from "./components/FromTo";
 import BottomButtons from "../../components/bottom_buttons";
 import { useTranslation } from "react-i18next";
-import { propertyTypes } from "../create_post/data/data";
+import { propertyTypes } from "../../data/data";
+import {
+    convertToTimeStamp,
+    getDateFromTimeStamp,
+    getTruncateTime,
+} from "../../halpers/time";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../store";
+import { setFilteredPosts } from "../../store/slices/filteredPosts";
+import { useNavigate } from "react-router-dom";
 
 const FilterModule: React.FC = () => {
     const [formData, setFormData] = useState({
         city: "",
         propertyType: "",
-        ownership: "",
-        area: "",
+        areaFrom: 0,
+        areaTo: 0,
         roomCountFrom: 0,
         roomCountTo: 0,
         priceFrom: 0,
         priceTo: 0,
-        date: "",
+        dateFrom: 0,
+        dateTo: 0,
         rented: false,
     });
 
+    const [update, setUpdate] = useState(1);
+
     const { t } = useTranslation();
+
+    const posts = useSelector((state: RootState) => state.posts.posts);
+
+    const dispatch = useDispatch();
+    const nav = useNavigate();
 
     const onClearHadnler = () => {
         setFormData({
             city: "",
             propertyType: "",
-            ownership: "",
-            area: "",
+            areaFrom: 0,
+            areaTo: 0,
             roomCountFrom: 0,
             roomCountTo: 0,
             priceFrom: 0,
             priceTo: 0,
-            date: "",
+            dateFrom: 0,
+            dateTo: 0,
             rented: false,
         });
+        setUpdate(update + 1);
     };
 
     const searchHandler = () => {
-        console.log(formData);
+        let filteredPosts = [...posts];
+
+        if (formData.city) {
+            filteredPosts = filteredPosts.filter(
+                (el) => el.region === formData.city
+            );
+        }
+
+        if (formData.propertyType) {
+            filteredPosts = filteredPosts.filter(
+                (el) => el.propertyType === formData.propertyType
+            );
+        }
+
+        // filter area
+        if (formData.areaFrom > 0) {
+            filteredPosts = filteredPosts.filter(
+                (el) => el.area > formData.areaFrom
+            );
+        }
+
+        if (formData.areaTo > 0) {
+            filteredPosts = filteredPosts.filter(
+                (el) => el.area < formData.areaTo
+            );
+        }
+
+        // filter room count
+        if (formData.roomCountFrom > 0) {
+            filteredPosts = filteredPosts.filter(
+                (el) => el.roomCount > formData.roomCountFrom
+            );
+        }
+
+        if (formData.roomCountTo > 0) {
+            filteredPosts = filteredPosts.filter(
+                (el) => el.roomCount < formData.roomCountTo
+            );
+        }
+
+        // filter price
+        if (formData.priceFrom > 0) {
+            filteredPosts = filteredPosts.filter(
+                (el) => el.price > formData.priceFrom
+            );
+        }
+
+        if (formData.priceTo > 0) {
+            filteredPosts = filteredPosts.filter(
+                (el) => el.price < formData.priceTo
+            );
+        }
+
+        // filter date
+        if (formData.dateFrom > 0) {
+            filteredPosts = filteredPosts.filter(
+                (el) =>
+                    getTruncateTime(el.date) >=
+                    getTruncateTime(formData.dateFrom)
+            );
+        }
+
+        if (formData.dateTo > 0) {
+            filteredPosts = filteredPosts.filter(
+                (el) =>
+                    getTruncateTime(el.date) <= getTruncateTime(formData.dateTo)
+            );
+        }
+
+        dispatch(setFilteredPosts(filteredPosts));
+        nav("/posts");
     };
 
     return (
-        <>
+        <React.Fragment key={update}>
             <Head
                 onChangeHandler={(value) =>
                     setFormData({ ...formData, city: value })
@@ -54,13 +143,15 @@ const FilterModule: React.FC = () => {
             />
             <div className={scss.wrap}>
                 <Flex gap={32} vertical>
-                    <MyInput
-                        value={formData.area}
-                        type="number"
-                        placeholder={t("lang17")}
-                        title={t("lang16")}
-                        onChangeHandler={(value) =>
-                            setFormData({ ...formData, area: value })
+                    <FromTo
+                        fromValue={formData.areaFrom}
+                        toValue={formData.areaTo}
+                        title="Квадратура"
+                        changeFromHandler={(value) =>
+                            setFormData({ ...formData, areaFrom: +value })
+                        }
+                        changeToHandler={(value) =>
+                            setFormData({ ...formData, areaTo: +value })
                         }
                     />
                     <MyDropDown
@@ -94,19 +185,41 @@ const FilterModule: React.FC = () => {
                         }
                     />
 
-                    <MyInput
-                        value={formData.date}
-                        onChangeHandler={(value) =>
-                            setFormData({
-                                ...formData,
-                                date: value,
-                            })
-                        }
-                        placeholder=""
-                        title={t("lang21")}
-                        type="date"
-                    />
-                    <Checkbox
+                    <Flex gap={16}>
+                        <MyInput
+                            value={
+                                formData.dateFrom !== 0
+                                    ? getDateFromTimeStamp(formData.dateFrom)
+                                    : "-"
+                            }
+                            onChangeHandler={(value) =>
+                                setFormData({
+                                    ...formData,
+                                    dateFrom: convertToTimeStamp(value),
+                                })
+                            }
+                            placeholder=""
+                            title={t("lang21")}
+                            type="date"
+                        />
+                        <MyInput
+                            value={
+                                formData.dateTo !== 0
+                                    ? getDateFromTimeStamp(formData.dateTo)
+                                    : "-"
+                            }
+                            onChangeHandler={(value) =>
+                                setFormData({
+                                    ...formData,
+                                    dateTo: convertToTimeStamp(value),
+                                })
+                            }
+                            placeholder=""
+                            title=""
+                            type="date"
+                        />
+                    </Flex>
+                    {/* <Checkbox
                         onChange={() =>
                             setFormData({
                                 ...formData,
@@ -116,7 +229,7 @@ const FilterModule: React.FC = () => {
                         checked={formData.rented}
                     >
                         {t("lang23")}
-                    </Checkbox>
+                    </Checkbox> */}
                 </Flex>
             </div>
             <BottomButtons
@@ -125,7 +238,7 @@ const FilterModule: React.FC = () => {
                 confirm={() => searchHandler()}
                 reject={() => onClearHadnler()}
             />
-        </>
+        </React.Fragment>
     );
 };
 

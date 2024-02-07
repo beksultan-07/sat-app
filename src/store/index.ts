@@ -3,6 +3,7 @@ import authSliceReducer from "./slices/auth";
 import favoritePostsReducer from "./slices/favoritePosts";
 import myPostsReducer from "./slices/myPosts";
 import postsReducer from "./slices/posts";
+import filteredPosts from "./slices/filteredPosts";
 
 export const store = configureStore({
     reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
         favorite: favoritePostsReducer,
         myPosts: myPostsReducer,
         posts: postsReducer,
+        filteredPosts: filteredPosts,
     },
 });
 
